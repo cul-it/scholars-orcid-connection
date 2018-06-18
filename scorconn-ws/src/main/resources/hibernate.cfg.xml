@@ -16,6 +16,8 @@
 			class="edu.cornell.library.scholars.orcidconnection.data.mapping.AccessToken"></mapping>
 		<mapping
 			class="edu.cornell.library.scholars.orcidconnection.data.mapping.Work"></mapping>
+		<mapping
+			class="edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry"></mapping>
 	</session-factory>
 </hibernate-configuration>
 
