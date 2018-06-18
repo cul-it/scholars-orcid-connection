@@ -1,0 +1,112 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<description><![CDATA[
+    ---------------------------------------------------------------------------
+
+    Build the website for the Scholars-ORCID Connection.
+
+    ---------------------------------------------------------------------------
+    ]]></description>
+
+	<parent>
+		<groupId>edu.cornell.library</groupId>
+		<artifactId>scholars-orcid-connection</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>scorconn-site</artifactId>
+	<packaging>pom</packaging>
+
+	<properties>
+		<!-- Explicitly enable the site generation. -->
+		<maven-site-plugin.skip>false</maven-site-plugin.skip>
+
+		<!-- github server corresponds to entry in ~/.m2/settings.xml -->
+		<github.global.server>github</github.global.server>
+	</properties>
+
+	<build>
+		<plugins>
+			<!-- Nothing to install here. -->
+			<plugin>
+				<artifactId>maven-install-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+
+			<!-- Nothing to deploy here (to Maven repository). -->
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+
+			<!-- Include markdown conversion in the site creation; test at port 9000 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.6</version>
+				<configuration>
+					<port>9000</port>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.doxia</groupId>
+						<artifactId>doxia-module-markdown</artifactId>
+						<version>1.7</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+			<!-- Deploy the site to github-pages -->
+			<plugin>
+				<groupId>com.github.github</groupId>
+				<artifactId>site-maven-plugin</artifactId>
+				<version>0.12</version>
+				<configuration>
+					<repositoryName>scholars-orcid-connection</repositoryName>
+					<repositoryOwner>cul-it</repositoryOwner>
+				</configuration>
+				<executions>
+					<execution>
+						<id>siteGithubPages</id>
+						<goals>
+							<goal>site</goal>
+						</goals>
+						<phase>site-deploy</phase>
+						<configuration>
+							<message>
+								Creating site for ${project.version}
+							</message>
+							<outputDirectory>${project.build.directory}/site</outputDirectory>
+							<branch>refs/heads/gh-pages</branch>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.9</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>project-team</report>
+							<report>license</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
+</project>
