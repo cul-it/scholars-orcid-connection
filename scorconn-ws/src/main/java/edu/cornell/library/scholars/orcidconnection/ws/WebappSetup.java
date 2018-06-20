@@ -1,9 +1,10 @@
-package edu.cornell.library.scholars.orcidconnection.startup;
+package edu.cornell.library.scholars.orcidconnection.ws;
 
 import java.util.Date;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -14,6 +15,7 @@ import edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Person;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Work;
 
+@WebListener
 public class WebappSetup implements ServletContextListener {
 
     /**
@@ -56,11 +58,13 @@ public class WebappSetup implements ServletContextListener {
         try (Session session = factory.openSession()) {
             session.beginTransaction();
 
-            long key = new Date().getTime();
-            session.save(createPerson(key));
-            session.save(createAccessToken(key));
-            session.save(createWork(key));
-            session.save(createLogEntry(key));
+            if ("X".isEmpty()) {
+                long key = new Date().getTime();
+                session.save(createPerson(key));
+                session.save(createAccessToken(key));
+                session.save(createWork(key));
+                session.save(createLogEntry(key));
+            }
 
             session.getTransaction().commit();
         }
@@ -95,7 +99,7 @@ public class WebappSetup implements ServletContextListener {
         w.setScholarsUri("scholarsUri" + key);
         return w;
     }
-    
+
     private LogEntry createLogEntry(long key) {
         LogEntry le = new LogEntry();
         le.setMessage("Startup smoke test: " + key);

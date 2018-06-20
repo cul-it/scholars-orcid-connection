@@ -1,0 +1,21 @@
+<h1>Not secure</h1>
+
+<p>
+  The webapp is not configured with CUWebAuth.
+</p>
+<p>
+  Enter the site password, and the net ID you want to use.
+</p>
+
+<form action="." method="get">
+  <input type="hidden" name="targetUrl" value="{{targetUrl}}">
+  <p>  
+    Site password: <input type="text" name="sitePassword">
+  </p>
+  <p> 
+    Net ID: <input type="text" name="fakeNetid">
+  </p>
+  <p>
+    <input type="submit" value="Submit">
+  </p>
+</form>
