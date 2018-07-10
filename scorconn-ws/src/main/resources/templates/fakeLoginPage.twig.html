@@ -19,3 +19,9 @@
     <input type="submit" value="Submit">
   </p>
 </form>
+
+{% if (not empty(message)) %}
+<p style="background-color: #FF8888">
+  {{message}}
+</p>
+{% endif %}

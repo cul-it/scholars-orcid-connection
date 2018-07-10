@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -47,8 +48,12 @@ public class CheckAuthFilter implements Filter {
     public static final String PARAMETER_FAKE_NETID = "fakeNetid";
     public static final String PARAMETER_SITE_PASSWORD = "sitePassword";
 
+    public static final String MESSAGE_WRONG_PASSWORD = "Password is incorrect";
+
     public static final String ATTRIBUTE_FAKE_NETID = CheckAuthFilter.class
             .getName() + "FakeNetid";
+    public static final String ATTRIBUTE_ERROR_MESSAGE = CheckAuthFilter.class
+            .getName() + "ErrorMessage";
 
     @Override
     public void init(FilterConfig arg0) throws ServletException {
@@ -95,7 +100,11 @@ public class CheckAuthFilter implements Filter {
             } else if (sessionContainsNetid()) {
                 honorTheRequestWithFakeNetid();
             } else if (requestProvidesNetidAndPassword()) {
-                recordNetidAndRedirectToTarget();
+                if (passwordIsCorrect()) {
+                    recordNetidAndRedirectToTarget();
+                } else {
+                    showFakeLoginPage(MESSAGE_WRONG_PASSWORD);
+                }
             } else {
                 showFakeLoginPage();
             }
@@ -128,8 +137,13 @@ public class CheckAuthFilter implements Filter {
 
             return StringUtils.isNotBlank(netid)
                     && StringUtils.isNotBlank(targetUrl)
-                    && StringUtils.isNotBlank(password) && password
-                            .equals(RuntimeProperties.getValue("sitePassword"));
+                    && StringUtils.isNotBlank(password);
+        }
+
+        private boolean passwordIsCorrect() {
+            String password = req.getParameter(PARAMETER_SITE_PASSWORD);
+            return Objects.equals(password,
+                    RuntimeProperties.getValue("sitePassword"));
         }
 
         private void honorTheRequest() throws IOException, ServletException {
@@ -157,6 +171,12 @@ public class CheckAuthFilter implements Filter {
             RequestDispatcher dispatcher = req.getServletContext()
                     .getNamedDispatcher(SERVLET_FAKE_LOGIN_PAGE);
             dispatcher.forward(req, resp);
+        }
+
+        private void showFakeLoginPage(String message)
+                throws ServletException, IOException {
+            req.setAttribute(ATTRIBUTE_ERROR_MESSAGE, message);
+            showFakeLoginPage();
         }
 
         private String getNetidFromSession() {
