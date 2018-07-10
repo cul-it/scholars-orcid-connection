@@ -1,6 +1,6 @@
 /* $This file is distributed under the terms of the license in /doc/license.txt$ */
 
-package edu.cornell.library.scholars.orcidconnection.ws;
+package edu.cornell.library.scholars.orcidconnection.ws.utils;
 
 import static org.jtwig.JtwigTemplate.classpathTemplate;
 

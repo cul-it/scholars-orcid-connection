@@ -1,10 +1,10 @@
 /* $This file is distributed under the terms of the license in /doc/license.txt$ */
 
-package edu.cornell.library.scholars.orcidconnection.ws;
+package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
-import static edu.cornell.library.scholars.orcidconnection.ws.CheckAuthFilter.ATTRIBUTE_ERROR_MESSAGE;
-import static edu.cornell.library.scholars.orcidconnection.ws.CheckAuthFilter.PARAMETER_TARGET_URL;
-import static edu.cornell.library.scholars.orcidconnection.ws.CheckAuthFilter.SERVLET_FAKE_LOGIN_PAGE;
+import static edu.cornell.library.scholars.orcidconnection.ws.filters.CheckAuthFilter.ATTRIBUTE_ERROR_MESSAGE;
+import static edu.cornell.library.scholars.orcidconnection.ws.filters.CheckAuthFilter.PARAMETER_TARGET_URL;
+import static edu.cornell.library.scholars.orcidconnection.ws.filters.CheckAuthFilter.SERVLET_FAKE_LOGIN_PAGE;
 
 import java.io.IOException;
 
@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jtwig.JtwigModel;
+
+import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 
 /**
  * Display a fake login page, in case we are configured without CUWebAuth.

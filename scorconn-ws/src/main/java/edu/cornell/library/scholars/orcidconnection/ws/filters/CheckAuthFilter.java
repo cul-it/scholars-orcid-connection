@@ -1,9 +1,9 @@
 /* $This file is distributed under the terms of the license in /doc/license.txt$ */
 
-package edu.cornell.library.scholars.orcidconnection.ws;
+package edu.cornell.library.scholars.orcidconnection.ws.filters;
 
-import static edu.cornell.library.scholars.orcidconnection.ws.ServletUtils.getExternalAuthHeaderName;
-import static edu.cornell.library.scholars.orcidconnection.ws.ServletUtils.getLocalId;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getExternalAuthHeaderName;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -28,6 +28,8 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import edu.cornell.library.scholars.orcidconnection.ws.utils.RuntimeProperties;
 
 /**
  * Filter all requests. Check for authorization from CUWebAuth, or fake it.

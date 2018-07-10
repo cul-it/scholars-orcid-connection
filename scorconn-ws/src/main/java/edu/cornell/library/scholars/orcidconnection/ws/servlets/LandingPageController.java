@@ -1,8 +1,9 @@
 /* $This file is distributed under the terms of the license in /doc/license.txt$ */
 
-package edu.cornell.library.scholars.orcidconnection.ws;
+package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
-import static edu.cornell.library.scholars.orcidconnection.ws.ServletUtils.getLocalId;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.setCompletionUrl;
 
 import java.io.IOException;
 
@@ -14,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jtwig.JtwigModel;
+
+import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 
 /**
  * Show the landing page.
@@ -31,7 +34,7 @@ public class LandingPageController extends HttpServlet {
             throws ServletException, IOException {
         String completionUrl = req.getParameter(PARAMETER_COMPLETION_URL);
         if (StringUtils.isNotEmpty(completionUrl)) {
-            ServletUtils.setCompletionUrl(req, completionUrl);
+            setCompletionUrl(req, completionUrl);
         }
         
         new PageRenderer(req, resp).render("/templates/landingPage.twig.html",
