@@ -1,1 +1,11 @@
 <h1>Landing page</h1>
+
+<form action="ProcessPushRequest" method="get">
+  <input type="hidden" name="targetUrl" value="{{targetUrl}}">
+  <p>  
+    Push the publications for {{localId}}?
+  </p>
+  <p>
+    <input type="submit" value="Push 'em">
+  </p>
+</form>

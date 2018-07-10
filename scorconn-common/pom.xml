@@ -21,6 +21,12 @@
 	<packaging>jar</packaging>
 
 	<dependencies>
+		<!-- The new ORCID API client -->
+		<dependency>
+			<groupId>org.vivoweb</groupId>
+			<artifactId>orcid-api-client</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
 		<dependency>
 			<groupId>org.hibernate</groupId>

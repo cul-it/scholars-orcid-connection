@@ -2,6 +2,9 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws;
 
+import static edu.cornell.library.scholars.orcidconnection.ws.ServletUtils.getExternalAuthHeaderName;
+import static edu.cornell.library.scholars.orcidconnection.ws.ServletUtils.getLocalId;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -80,7 +83,6 @@ public class CheckAuthFilter implements Filter {
         private final HttpServletResponse resp;
         private final HttpSession session;
         private final FilterChain chain;
-        private final String netidHeaderName;
 
         FilterCore(ServletRequest req, ServletResponse resp,
                 FilterChain chain) {
@@ -88,8 +90,6 @@ public class CheckAuthFilter implements Filter {
             this.resp = (HttpServletResponse) resp;
             this.session = this.req.getSession();
             this.chain = chain;
-            this.netidHeaderName = RuntimeProperties
-                    .getValue("externalAuth.headerName");
         }
 
         void filter() throws IOException, ServletException {
@@ -117,7 +117,7 @@ public class CheckAuthFilter implements Filter {
         }
 
         private boolean requestContainsNetidHeader() {
-            String header = req.getHeader(netidHeaderName);
+            String header = getLocalId(req);
             log.debug("netid header is '" + header + "'");
             return StringUtils.isNotBlank(header);
         }
@@ -155,7 +155,7 @@ public class CheckAuthFilter implements Filter {
                 throws IOException, ServletException {
             log.debug("honor the request with fake netid");
             NetidFakerRequest wrappedRequest = new NetidFakerRequest(req,
-                    netidHeaderName, getNetidFromSession());
+                    getExternalAuthHeaderName(), getNetidFromSession());
             chain.doFilter(wrappedRequest, resp);
         }
 
