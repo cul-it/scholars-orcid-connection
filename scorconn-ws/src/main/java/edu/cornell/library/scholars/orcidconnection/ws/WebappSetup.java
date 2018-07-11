@@ -1,22 +1,33 @@
 package edu.cornell.library.scholars.orcidconnection.ws;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
+import edu.cornell.library.orcidclient.context.OrcidClientContext;
+import edu.cornell.library.orcidclient.context.OrcidClientContextImpl;
+import edu.cornell.library.orcidclient.context.OrcidClientContextImpl.Setting;
+import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.scholars.orcidconnection.data.HibernateUtil;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.AccessToken;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Person;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Work;
+import edu.cornell.library.scholars.orcidconnection.ws.utils.RuntimeProperties;
+import edu.cornell.library.scholars.orcidconnection.ws.utils.StartupStatus;
 
 @WebListener
 public class WebappSetup implements ServletContextListener {
+    private static final Log log = LogFactory.getLog(WebappSetup.class);
 
     /**
      * TODO
@@ -45,6 +56,7 @@ public class WebappSetup implements ServletContextListener {
      * Create the StartupStatusFilter that will do nothing if things are OK, return 500 otherwise, with informative text.
      * </pre>
      */
+
     /*
      * (non-Javadoc)
      * 
@@ -54,6 +66,18 @@ public class WebappSetup implements ServletContextListener {
      */
     @Override
     public void contextInitialized(ServletContextEvent arg0) {
+        initializeOrcidContext();
+
+        initializePersistenceCache();
+
+        // TODO Auto-generated method stub
+        System.out.println("\n\n\nBOGUS TO THE MAX\n\n\n");
+    }
+
+    /**
+     * 
+     */
+    private void initializePersistenceCache() {
         SessionFactory factory = HibernateUtil.getSessionFactory();
         try (Session session = factory.openSession()) {
             session.beginTransaction();
@@ -68,9 +92,31 @@ public class WebappSetup implements ServletContextListener {
 
             session.getTransaction().commit();
         }
-        //
-        // TODO Auto-generated method stub
-        System.out.println("\n\n\nBOGUS TO THE MAX\n\n\n");
+    }
+
+    private void initializeOrcidContext() {
+        Map<Setting, String> settings = convertToSettings(
+                RuntimeProperties.getMap());
+        try {
+            OrcidClientContext.initialize(new OrcidClientContextImpl(settings));
+            log.error("BOGUS -- TEST THE CONTEXT!!!");
+            log.info("Context is: " + OrcidClientContext.getInstance());
+        } catch (OrcidClientException e) {
+            StartupStatus.addError("Failed to initialize OrcidClientContent",
+                    e);
+        }
+    }
+
+    private Map<Setting, String> convertToSettings(
+            Map<String, String> strings) {
+        Map<Setting, String> settings = new HashMap<>();
+        for (Setting setting : Setting.values()) {
+            String string = setting.toString();
+            if (strings.containsKey(string)) {
+                settings.put(setting, strings.get(string));
+            }
+        }
+        return settings;
     }
 
     private Person createPerson(long key) {

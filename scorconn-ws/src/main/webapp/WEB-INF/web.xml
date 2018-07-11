@@ -6,6 +6,11 @@
 	version="3.1">
 
 	<filter-mapping>
+	    <filter-name>displayStatusFilter</filter-name>
+	    <url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
 	    <filter-name>checkAuthFilter</filter-name>
 	    <url-pattern>/*</url-pattern>
 	</filter-mapping>

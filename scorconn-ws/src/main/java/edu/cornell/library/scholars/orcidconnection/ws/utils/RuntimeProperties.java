@@ -37,4 +37,11 @@ public class RuntimeProperties {
         m.put("sitePassword", "pw");
         return m;
     }
+
+    /**
+     * @return
+     */
+    public static Map<String, String> getMap() {
+        return new HashMap<String, String>(getInstance());
+    }
 }

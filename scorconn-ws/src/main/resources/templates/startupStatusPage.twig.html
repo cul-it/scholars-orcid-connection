@@ -1,0 +1,13 @@
+<h1>Bad status at startup</h1>
+
+{% for error in status.errors %}
+
+<div style="border: solid black;">
+<p>{{error.message}}</p>
+
+{% if (not empty(error.cause)) %}
+<p>{{error.cause}}</p>
+{% endif %}
+</div>
+
+{% endfor %}
