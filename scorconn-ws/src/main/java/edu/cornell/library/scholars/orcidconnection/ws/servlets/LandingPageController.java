@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jtwig.JtwigModel;
 
 import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 
@@ -36,9 +35,10 @@ public class LandingPageController extends HttpServlet {
         if (StringUtils.isNotEmpty(completionUrl)) {
             setCompletionUrl(req, completionUrl);
         }
-        
-        new PageRenderer(req, resp).render("/templates/landingPage.twig.html",
-                JtwigModel.newModel().with("localId", getLocalId(req)));
+
+        new PageRenderer(req, resp) //
+                .setValue("localId", getLocalId(req))
+                .render("/templates/landingPage.twig.html");
     }
 
 }

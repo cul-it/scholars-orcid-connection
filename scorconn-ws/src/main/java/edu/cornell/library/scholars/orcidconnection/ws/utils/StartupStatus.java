@@ -5,10 +5,15 @@ package edu.cornell.library.scholars.orcidconnection.ws.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * TODO
  */
 public class StartupStatus {
+    private static final Log log = LogFactory.getLog(StartupStatus.class);
+
     private static final StartupStatus instance = new StartupStatus();
 
     public static StartupStatus getInstance() {
@@ -16,6 +21,7 @@ public class StartupStatus {
     }
 
     public static void addError(String message, Throwable cause) {
+        log.error(message, cause);
         getInstance().addError(new Error(message, cause));
     }
 

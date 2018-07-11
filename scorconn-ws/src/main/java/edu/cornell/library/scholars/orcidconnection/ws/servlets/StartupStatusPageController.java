@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.jtwig.JtwigModel;
-
 import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.StartupStatus;
 
@@ -26,9 +24,9 @@ public class StartupStatusPageController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        new PageRenderer(req, resp).render(
-                "/templates/startupStatusPage.twig.html", JtwigModel.newModel() //
-                        .with("status", StartupStatus.getInstance()));
+        new PageRenderer(req, resp).setStatusCode(500)
+                .setValue("status", StartupStatus.getInstance())
+                .render("/templates/startupStatusPage.twig.html");
     }
 
 }

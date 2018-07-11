@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jtwig.JtwigModel;
 
 import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 
@@ -28,11 +27,10 @@ public class FakeLoginPageController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        new PageRenderer(req, resp).render("/templates/fakeLoginPage.twig.html",
-                JtwigModel.newModel() //
-                        .with(PARAMETER_TARGET_URL, figureTargetUrl(req))
-                        .with("message",
-                                req.getAttribute(ATTRIBUTE_ERROR_MESSAGE)));
+        new PageRenderer(req, resp)
+                .setValue(PARAMETER_TARGET_URL, figureTargetUrl(req))
+                .setValue("message", req.getAttribute(ATTRIBUTE_ERROR_MESSAGE))
+                .render("/templates/fakeLoginPage.twig.html");
     }
 
     private Object figureTargetUrl(HttpServletRequest req) {
