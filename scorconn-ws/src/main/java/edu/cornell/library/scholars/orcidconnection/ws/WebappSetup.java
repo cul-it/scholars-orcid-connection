@@ -17,6 +17,8 @@ import edu.cornell.library.orcidclient.context.OrcidClientContext;
 import edu.cornell.library.orcidclient.context.OrcidClientContextImpl;
 import edu.cornell.library.orcidclient.context.OrcidClientContextImpl.Setting;
 import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
+import edu.cornell.library.scholars.orcidconnection.ScholarsOrcidConnection;
+import edu.cornell.library.scholars.orcidconnection.ScholarsOrcidConnection.IllegalPropertiesException;
 import edu.cornell.library.scholars.orcidconnection.data.HibernateUtil;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.AccessToken;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry;
@@ -69,6 +71,8 @@ public class WebappSetup implements ServletContextListener {
         initializeOrcidContext();
 
         initializePersistenceCache();
+
+        initializeConnection();
 
         // TODO Auto-generated method stub
         System.out.println("\n\n\nBOGUS TO THE MAX\n\n\n");
@@ -156,6 +160,19 @@ public class WebappSetup implements ServletContextListener {
     private void testHibernateConnection() {
         HibernateUtil.getSessionFactory().openSession()
                 .createQuery("FROM Person").list();
+    }
+
+    /**
+     * 
+     */
+    private void initializeConnection() {
+        try {
+            ScholarsOrcidConnection.init(RuntimeProperties.getMap());
+            ScholarsOrcidConnection.instance().checkActivitiesLink();
+        } catch (Exception e) {
+            StartupStatus.addError("Failed to initialize the ActivitiesLink",
+                    e);
+        }
     }
 
     @Override
