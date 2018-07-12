@@ -49,6 +49,10 @@ public class AccessToken {
     @Column(name = "CREATED")
     private Date created;
 
+    public int getId() {
+        return id;
+    }
+
     public String getOrcidId() {
         return orcidId;
     }

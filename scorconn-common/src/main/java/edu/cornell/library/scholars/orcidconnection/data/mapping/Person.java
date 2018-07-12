@@ -6,33 +6,37 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
  
 @Entity
 @Table(name = "Person")
 public class Person {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+
     @Column(name = "LOCAL_ID", unique = true, nullable = false, length = 10)
     private String localId;
  
-    @Column(name = "ORCID_ID", unique = true, nullable = false, length = 19)
+    @Column(name = "ORCID_ID", nullable = false, length = 19)
     private String orcidId;
  
-    @Column(name = "ORCID_NAME", unique = false, nullable = false, length = 50)
+    @Column(name = "ORCID_NAME", nullable = false, length = 50)
     private String orcidName;
 
     @CreationTimestamp
     @Column(name = "CREATED")
     private Date created;
     
-    @UpdateTimestamp
-    @Column(name = "LAST_MODIFIED")
-    private Date lastModified;
-    
+    public int getId() {
+        return id;
+    }
+
     public String getLocalId() {
         return localId;
     }
@@ -61,8 +65,4 @@ public class Person {
         return created;
     }
 
-    public Date getLastModified() {
-        return lastModified;
-    }
- 
 }

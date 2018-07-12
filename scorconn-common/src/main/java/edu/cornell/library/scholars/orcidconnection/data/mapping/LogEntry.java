@@ -19,8 +19,10 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @Table(name = "LogEntry")
 public class LogEntry {
-    public enum Severity {DEBUG, INFO, WARN, ERROR};
-    
+    public enum Severity {
+        DEBUG, INFO, WARN, ERROR
+    };
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;

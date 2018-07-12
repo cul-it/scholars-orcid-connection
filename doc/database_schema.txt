@@ -1,0 +1,35 @@
+# Load this at QuickDBD https://www.quickdatabasediagrams.com/ to produce an image of the design.
+
+Person 
+-----
+id PK int
+LOCAL_ID varchar(10)
+ORCID_ID varchar(19)
+ORCID_NAME varchar(50)
+CREATED timestamp
+
+AccessToken
+-----
+id PK int
+ORCID_ID character(19) FK >- Person.ORCID_ID
+SCOPE varchar(50)
+ACCESS_TOKEN varchar(50)
+TOKEN_TYPE varchar(10)
+REFRESH_TOKEN varchar(50)
+EXPIRES_IN bigint
+JSON varchar(500)
+CREATED timestamp
+
+Work
+----
+SCHOLARS_URI PK varchar(500)
+ORCID_ID character(19) FK >- Person.ORCID_ID
+CREATED timestamp
+LAST_MODIFIED timestamp
+
+LogEntry
+-----
+id PK int
+SEVERITY varchar(10)
+MESSAGE varchar
+CREATED timestamp
