@@ -11,14 +11,20 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.annotations.CreationTimestamp;
 
 /**
  * A record of notable events in the life of the database.
+ * 
+ * If a message is more than 10,000 characters, it will be truncated.
  */
 @Entity
 @Table(name = "LogEntry")
 public class LogEntry {
+    private static final Log log = LogFactory.getLog(LogEntry.class);
+
     public enum Severity {
         DEBUG, INFO, WARN, ERROR
     };
@@ -30,7 +36,7 @@ public class LogEntry {
     @Column(name = "SEVERITY", nullable = false, length = 10)
     private Severity severity;
 
-    @Column(name = "MESSAGE", nullable = false)
+    @Column(name = "MESSAGE", nullable = false, length = 10000)
     private String message;
 
     @CreationTimestamp
@@ -50,7 +56,12 @@ public class LogEntry {
     }
 
     public void setMessage(String message) {
-        this.message = message;
+        if (message.length() <= 10000) {
+            this.message = message;
+        } else {
+            log.warn("Log message truncated: " + message);
+            this.message = message.substring(0, 9996) + " ...";
+        }
     }
 
     public int getId() {

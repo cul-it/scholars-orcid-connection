@@ -2,8 +2,6 @@
 
 package edu.cornell.library.scholars.orcidconnection.data;
 
-import java.io.File;
-
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -16,8 +14,6 @@ public class HibernateUtil {
         // A SessionFactory is set up once for an application!
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                 .configure().build();
-//        final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-//                .configure(new File("hibernate.cgf.xml")).build();
         try {
             return new MetadataSources(registry).buildMetadata()
                     .buildSessionFactory();
