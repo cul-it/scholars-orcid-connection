@@ -2,7 +2,10 @@
 
 package edu.cornell.library.scholars.orcidconnection;
 
+import java.util.List;
 import java.util.Map;
+
+import edu.cornell.library.scholars.orcidconnection.activitieslink.Publication;
 
 /**
  * TODO
@@ -28,6 +31,8 @@ public abstract class ScholarsOrcidConnection {
             return instance;
         }
     }
+
+    public abstract List<Publication> getPublications(String localId);
 
     public class IllegalPropertiesException extends Exception {
 

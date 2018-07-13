@@ -1,1 +1,11 @@
-<H1>BOGUS ERROR PAGE</H1>
+<H1>ERROR PAGE</H1>
+
+<p>
+A system error occurred. Please notify the system administrator.
+</p>
+
+{% if (not empty(message)) %}
+<p style="background-color: #FF8888">
+  {{message}}
+</p>
+{% endif %}

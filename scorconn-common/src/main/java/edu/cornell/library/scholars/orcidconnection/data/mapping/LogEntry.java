@@ -27,7 +27,7 @@ public class LogEntry {
 
     public enum Severity {
         DEBUG, INFO, WARN, ERROR
-    };
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

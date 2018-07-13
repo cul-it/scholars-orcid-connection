@@ -1,0 +1,13 @@
+<h1>Invalid token page</h1>
+
+<form action="ProcessPushRequest" method="get">
+  <input type="hidden" name="targetUrl" value="{{targetUrl}}">
+  <p>  
+    It appears that the permission to push publications was rescinded. Do you want to grant permission again?
+    <br>
+    Push the publications for {{localId}}?
+  </p>
+  <p>
+    <input type="submit" value="Push 'em">
+  </p>
+</form>

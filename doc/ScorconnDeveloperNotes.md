@@ -64,8 +64,8 @@ the user rescinds permission, and then grants it again.
 * __*Note that this contains todos for the orcid client, as well as for the orcid connection.*__
 
 ## Right NOW
-* write OrcidActionClient.isAccessTokenValid()
-º* Create servlet2:
+* Put template filenames into ServletUtils, or create a base class/interface for Servlets and Filters
+* Create servlet2:
 	* reacts to that button.
 	* If no accessToken for the user, get accessToken
 		* Create callback servlet that updates the persistence cache or expresses regrets to the user (with optional completion URL)
@@ -99,6 +99,7 @@ the user rescinds permission, and then grants it again.
 * Remove the confusion in the purpose of the cache. 
 	* Should we add methods for bare get/set of access tokens?
 	* Should we create an implementation of the cache that accepts an AccessToken cache?
+* Is anyone using the Success URL and Failure URL? Can we eliminate or combine them?
 * Create a "liveness" call to ORCID
 	* context.checkOauthUrls
 	* context.checkPublicApi

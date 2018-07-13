@@ -4,13 +4,18 @@ package edu.cornell.library.scholars.orcidconnection.ws.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
+import edu.cornell.library.orcidclient.auth.AuthorizationStateProgressCache;
+import edu.cornell.library.orcidclient.auth.OrcidAuthorizationClient;
+import edu.cornell.library.orcidclient.context.OrcidClientContext;
+import edu.cornell.library.orcidclient.http.BaseHttpWrapper;
+
 /**
  * TODO
  */
 public class ServletUtils {
     public static final String FILTER_CHECK_AUTH = "checkAuthFilter";
     public static final String FILTER_DISPLAY_STATUS = "displayStatusFilter";
-    
+
     public static final String SERVLET_FAKE_LOGIN_PAGE = "FakeLoginPage";
     public static final String SERVLET_STARTUP_STATUS_PAGE = "StartupStatusPage";
     public static final String SERVLET_PROCESS_PUSH_REQUEST = "ProcessPushRequest";
@@ -32,6 +37,13 @@ public class ServletUtils {
 
     public static String getCompletionUrl(HttpServletRequest req) {
         return (String) req.getSession().getAttribute(ATTRIBUTE_COMPLETION_URL);
+    }
+
+    public static OrcidAuthorizationClient getAuthorizationClient(
+            AuthorizationStateProgressCache cache) {
+        OrcidClientContext occ = OrcidClientContext.getInstance();
+        BaseHttpWrapper httpWrapper = new BaseHttpWrapper();
+        return new OrcidAuthorizationClient(occ, cache, httpWrapper);
     }
 
     private ServletUtils() {

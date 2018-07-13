@@ -2,8 +2,14 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
+import static edu.cornell.library.orcidclient.actions.ApiScope.PERSON_UPDATE;
+import static edu.cornell.library.orcidclient.auth.AccessToken.NO_TOKEN;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_PROCESS_PUSH_REQUEST;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
+
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,7 +17,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.cornell.library.orcidclient.actions.OrcidActionClient;
 import edu.cornell.library.orcidclient.auth.AccessToken;
+import edu.cornell.library.orcidclient.auth.AuthorizationStateProgress;
+import edu.cornell.library.orcidclient.auth.OrcidAuthorizationClient;
+import edu.cornell.library.orcidclient.context.OrcidClientContext;
+import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
+import edu.cornell.library.orcidclient.http.BaseHttpWrapper;
+import edu.cornell.library.scholars.orcidconnection.PublicationsUpdateProcessor;
+import edu.cornell.library.scholars.orcidconnection.accesstokens.BogusCache;
+import edu.cornell.library.scholars.orcidconnection.data.DbLogger;
+import edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Severity;
+import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 
 /**
  * The user has said that they are ready to push the publications.
@@ -24,127 +41,108 @@ import edu.cornell.library.orcidclient.auth.AccessToken;
  */
 @WebServlet(name = SERVLET_PROCESS_PUSH_REQUEST, urlPatterns = "/ProcessPushRequest")
 public class ProcessPushRequestController extends HttpServlet {
+    private static final String SERVLET_URL = "/ProcessPushRequest";
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         new ServletCore(req, resp).doGet();
     }
 
-    /**
-     * Do the work in this inner class, so we can use instance variables and
-     * still be thread-safe.
-     */
+    /** Thread-safe inner class */
     private static class ServletCore {
         private final HttpServletRequest req;
         private final HttpServletResponse resp;
+        private final OrcidClientContext occ;
+        private final BogusCache cache;
+        private final OrcidAuthorizationClient authClient;
+        private AuthorizationStateProgress progress;
         private AccessToken accessToken;
 
         public ServletCore(HttpServletRequest req, HttpServletResponse resp) {
             this.req = req;
             this.resp = resp;
+            this.occ = OrcidClientContext.getInstance();
+            this.cache = BogusCache.getCache(req, getLocalId(req));
+            this.authClient = new OrcidAuthorizationClient(occ, cache,
+                    new BaseHttpWrapper());
         }
 
-        private void doGet() {
-            getAccessTokenFromCache();
-            if (!isAccessTokenPresent()) {
-                redirectIntoThreeLeggedOauthDance();
-            } else if (!isAccessTokenStillValid()) {
-                recordAccessTokenNotValid();
-                showInvalidTokenPage();
-            } else {
-                requestAsynchronousUpdate();
-                showAcknowledgementPage();
+        private void doGet() throws IOException {
+            try {
+                getAccessTokenFromCache();
+                if (!isAccessTokenPresent()) {
+                    redirectIntoThreeLeggedOauthDance();
+                } else if (!isAccessTokenStillValid()) {
+                    recordAccessTokenNotValid();
+                    showInvalidTokenPage();
+                } else {
+                    requestAsynchronousUpdate();
+                    showAcknowledgementPage();
+                }
+            } catch (OrcidClientException e) {
+                throw new RuntimeException("Failed to process the push request",
+                        e);
             }
         }
 
-        /**
-         * <pre>
-         * AuthorizationStateProgressCache.getByScope() -- NEED TO DEVELOP A CACHE
-         * </pre>
-         */
-        private AccessToken getAccessTokenFromCache() {
-            // TODO Auto-generated method stub
-            throw new RuntimeException(
-                    "ProcessPushRequestController.getAccessTokenFromCache() not implemented.");
-
+        private void getAccessTokenFromCache() {
+            try {
+                progress = cache.getByScope(PERSON_UPDATE);
+                if (progress == null) {
+                    accessToken = NO_TOKEN;
+                } else {
+                    accessToken = progress.getAccessToken();
+                }
+            } catch (OrcidClientException e) {
+                throw new RuntimeException("Failed to read the cache.", e);
+            }
         }
 
-        /**
-         * @return
-         */
         private boolean isAccessTokenPresent() {
-            // TODO Auto-generated method stub
-            throw new RuntimeException(
-                    "ServletCore.isAccessTokenPresent() not implemented.");
-
+            return (accessToken != null) && (accessToken != NO_TOKEN);
         }
 
-        /**
-         * @return
-         */
-        private boolean isAccessTokenStillValid() {
-            // TODO Auto-generated method stub
-            throw new RuntimeException(
-                    "ProcessPushRequestController.isAccessTokenStillValid() not implemented.");
-
-        }
-
-        /**
-         * 
-         */
-        private void recordAccessTokenNotValid() {
-            // TODO Auto-generated method stub
-            throw new RuntimeException(
-                    "ServletCore.recordAccessTokenNotValid() not implemented.");
-
-        }
-
-        private void showInvalidTokenPage() {
-            throw new RuntimeException(
-                    "ProcessPushRequestController.ServletCore.showInvalidTokenPage not implemented.");
-        }
-
-        /**
-         * <pre>
-         * return new OrcidAuthorizationClient(occ, WebappCache.getCache(),
-         *         new BaseHttpWrapper());
-         * 
-         * AuthorizationStateProgress progress = authClient
-         *         .createProgressObject(scope, callbackUrl(), callbackUrl());
-         * 
-         * resp.sendRedirect(authClient.buildAuthorizationCall(progress));
-         * </pre>
-         */
         private void redirectIntoThreeLeggedOauthDance() {
-            // TODO Auto-generated method stub
-            throw new RuntimeException(
-                    "ProcessPushRequestController.redirectIntoThreeLeggedOauthDance() not implemented.");
-
+            try {
+                URI callback = new URI(occ.getCallbackUrl());
+                resp.sendRedirect(authClient.buildAuthorizationCall(
+                        authClient.createProgressObject(PERSON_UPDATE, callback,
+                                callback)));
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(
+                        "Orcid context returned an invalid callback URL", e);
+            } catch (OrcidClientException | IOException e) {
+                throw new RuntimeException("Failed to start the OAuth dance.",
+                        e);
+            }
         }
 
-        /**
-         * <pre>
-         * </pre>
-         */
+        private boolean isAccessTokenStillValid() throws OrcidClientException {
+            OrcidActionClient actionClient = new OrcidActionClient(occ,
+                    new BaseHttpWrapper());
+            return actionClient.isAccessTokenValid(accessToken);
+        }
+
+        private void recordAccessTokenNotValid() throws OrcidClientException {
+            DbLogger.writeLogEntry(Severity.INFO,
+                    "Access token was not valid: %s", accessToken);
+            cache.store(progress.addAccessToken(NO_TOKEN));
+        }
+
+        private void showInvalidTokenPage() throws IOException {
+            new PageRenderer(req, resp) //
+                    .setValue("localId", getLocalId(req))
+                    .render("/templates/invalidTokenPage.twig.html");
+        }
+
         private void requestAsynchronousUpdate() {
-            // TODO Auto-generated method stub
-            throw new RuntimeException(
-                    "ProcessPushRequestController.requestAsynchronousUpdate() not implemented.");
-
+            new PublicationsUpdateProcessor(getLocalId(req)).run();
         }
 
-        /**
-         * <pre>
-         * // new PageRenderer(req,
-         * // resp).render("/templates/landingPage.twig.html",
-         * // JtwigModel.newModel().with("localId", getLocalId(req)));
-         * </pre>
-         */
-        private void showAcknowledgementPage() {
-            // TODO Auto-generated method stub
-            throw new RuntimeException(
-                    "ProcessPushRequestController.showAcknowledgementPage() not implemented.");
-
+        private void showAcknowledgementPage() throws IOException {
+            new PageRenderer(req, resp) //
+                    .setValue("localId", getLocalId(req))
+                    .render("/templates/acknowledgePushProcessingPage.twig.html");
         }
     }
 }

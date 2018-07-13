@@ -18,7 +18,8 @@ import edu.cornell.library.orcidclient.context.OrcidClientContextImpl;
 import edu.cornell.library.orcidclient.context.OrcidClientContextImpl.Setting;
 import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.scholars.orcidconnection.ScholarsOrcidConnection;
-import edu.cornell.library.scholars.orcidconnection.ScholarsOrcidConnection.IllegalPropertiesException;
+import edu.cornell.library.scholars.orcidconnection.activitieslink.ActivitiesLink;
+import edu.cornell.library.scholars.orcidconnection.activitieslink.ActivitiesLinkImpl;
 import edu.cornell.library.scholars.orcidconnection.data.HibernateUtil;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.AccessToken;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry;
@@ -32,7 +33,7 @@ public class WebappSetup implements ServletContextListener {
     private static final Log log = LogFactory.getLog(WebappSetup.class);
 
     /**
-     * TODO
+     * TODO BOGUS
      * 
      * <pre>
      * Load the startup parameters
@@ -59,33 +60,20 @@ public class WebappSetup implements ServletContextListener {
      * </pre>
      */
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * javax.servlet.ServletContextListener#contextInitialized(javax.servlet.
-     * ServletContextEvent)
-     */
     @Override
     public void contextInitialized(ServletContextEvent arg0) {
         initializeOrcidContext();
-
         initializePersistenceCache();
-
         initializeConnection();
-
-        // TODO Auto-generated method stub
-        System.out.println("\n\n\nBOGUS TO THE MAX\n\n\n");
+        log.info("WebappSetup complete.");
     }
 
-    /**
-     * 
-     */
     private void initializePersistenceCache() {
         SessionFactory factory = HibernateUtil.getSessionFactory();
         try (Session session = factory.openSession()) {
             session.beginTransaction();
 
+            // ALL BOGUS
             if ("X".isEmpty()) {
                 long key = new Date().getTime();
                 session.save(createPerson(key));
@@ -96,6 +84,8 @@ public class WebappSetup implements ServletContextListener {
 
             session.getTransaction().commit();
         }
+
+        // BOGUS Create an instance of the cache.
     }
 
     private void initializeOrcidContext() {
@@ -168,7 +158,9 @@ public class WebappSetup implements ServletContextListener {
     private void initializeConnection() {
         try {
             ScholarsOrcidConnection.init(RuntimeProperties.getMap());
-            ScholarsOrcidConnection.instance().checkActivitiesLink();
+            ActivitiesLink link = new ActivitiesLinkImpl(
+                    ScholarsOrcidConnection.instance());
+            link.checkConnection();
         } catch (Exception e) {
             StartupStatus.addError("Failed to initialize the ActivitiesLink",
                     e);
