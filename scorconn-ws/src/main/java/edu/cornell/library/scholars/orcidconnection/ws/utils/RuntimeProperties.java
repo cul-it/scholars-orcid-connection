@@ -39,7 +39,7 @@ public class RuntimeProperties {
         m.put("CLIENT_SECRET", "eca5e9f7-527f-4898-a30d-996b6a635b0e");
         m.put("API_PLATFORM", "sandbox");
         m.put("WEBAPP_BASE_URL", "http://localhost:8888/scorconn-ws");
-        m.put("CALLBACK_PATH", "orcidCallback");
+        m.put("CALLBACK_PATH", "OrcidCallback");
         return m;
     }
 

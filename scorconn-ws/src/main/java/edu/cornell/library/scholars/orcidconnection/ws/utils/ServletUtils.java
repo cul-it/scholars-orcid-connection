@@ -8,6 +8,13 @@ import javax.servlet.http.HttpServletRequest;
  * TODO
  */
 public class ServletUtils {
+    public static final String FILTER_CHECK_AUTH = "checkAuthFilter";
+    public static final String FILTER_DISPLAY_STATUS = "displayStatusFilter";
+    
+    public static final String SERVLET_FAKE_LOGIN_PAGE = "FakeLoginPage";
+    public static final String SERVLET_STARTUP_STATUS_PAGE = "StartupStatusPage";
+    public static final String SERVLET_PROCESS_PUSH_REQUEST = "ProcessPushRequest";
+
     private static final String ATTRIBUTE_COMPLETION_URL = ServletUtils.class
             .getName() + "CompletionUrl";
 

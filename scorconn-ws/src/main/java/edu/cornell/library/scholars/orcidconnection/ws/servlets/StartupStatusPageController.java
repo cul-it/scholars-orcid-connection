@@ -2,7 +2,7 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
-import static edu.cornell.library.scholars.orcidconnection.ws.filters.DisplayStatusFilter.SERVLET_STARTUP_STATUS_PAGE;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_STARTUP_STATUS_PAGE;
 
 import java.io.IOException;
 

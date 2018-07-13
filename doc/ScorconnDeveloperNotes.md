@@ -45,6 +45,11 @@ the user rescinds permission, and then grants it again.
 * __*TBD*__
 * Another filter, how does it work, what does it do? Why is it good? (returns a 500)
 
+## Application flow
+* __*TBD*__
+* _Is it reasonable to describe all of the paths through the application?_
+* _Don't forget the completion URL (optional)_
+
 ## Acceptance test cases
 ### Web service
 * User has more than one ORCID ID. Test going back and forth between them in the web service
@@ -60,7 +65,7 @@ the user rescinds permission, and then grants it again.
 
 ## Right NOW
 * write OrcidActionClient.isAccessTokenValid()
-* Create servlet2:
+º* Create servlet2:
 	* reacts to that button.
 	* If no accessToken for the user, get accessToken
 		* Create callback servlet that updates the persistence cache or expresses regrets to the user (with optional completion URL)
@@ -72,6 +77,9 @@ the user rescinds permission, and then grants it again.
 	* push them to orcid
 		* write to the log
 * Create a real persistence cache
+* Create the completion URL mechanism.
+	* If present on landing, record it in the session
+	* If present on terminal pages, offer as a link
 * Implement the startup sequence for scorconn-ws
 	* Load the startup parameters
 	* Test the database connection
@@ -88,6 +96,9 @@ the user rescinds permission, and then grants it again.
 		* Tell ORCID to add/update/delete publications
 
 ## Real SOON
+* Remove the confusion in the purpose of the cache. 
+	* Should we add methods for bare get/set of access tokens?
+	* Should we create an implementation of the cache that accepts an AccessToken cache?
 * Create a "liveness" call to ORCID
 	* context.checkOauthUrls
 	* context.checkPublicApi

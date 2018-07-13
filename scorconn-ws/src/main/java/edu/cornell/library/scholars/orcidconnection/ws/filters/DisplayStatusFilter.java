@@ -2,6 +2,9 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.filters;
 
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.FILTER_DISPLAY_STATUS;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_STARTUP_STATUS_PAGE;
+
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -18,10 +21,8 @@ import edu.cornell.library.scholars.orcidconnection.ws.utils.StartupStatus;
 /**
  * TODO
  */
-@WebFilter(filterName = "displayStatusFilter")
+@WebFilter(filterName = FILTER_DISPLAY_STATUS)
 public class DisplayStatusFilter implements Filter {
-    public static final String SERVLET_STARTUP_STATUS_PAGE = "StartupStatusPage";
-
     @Override
     public void init(FilterConfig config) throws ServletException {
         // Nothing to initialize

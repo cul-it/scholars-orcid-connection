@@ -2,6 +2,8 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.filters;
 
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.FILTER_CHECK_AUTH;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_FAKE_LOGIN_PAGE;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getExternalAuthHeaderName;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
 
@@ -43,11 +45,9 @@ import edu.cornell.library.scholars.orcidconnection.ws.utils.RuntimeProperties;
  * Note: some requests must be honored even without authorization, such as a CSS
  * file for the fake login page. For now, there are no such requests.
  */
-@WebFilter(filterName = "checkAuthFilter")
+@WebFilter(filterName = FILTER_CHECK_AUTH)
 public class CheckAuthFilter implements Filter {
     private static final Log log = LogFactory.getLog(CheckAuthFilter.class);
-
-    public static final String SERVLET_FAKE_LOGIN_PAGE = "FakeLoginPage";
 
     public static final String PARAMETER_TARGET_URL = "targetUrl";
     public static final String PARAMETER_FAKE_NETID = "fakeNetid";

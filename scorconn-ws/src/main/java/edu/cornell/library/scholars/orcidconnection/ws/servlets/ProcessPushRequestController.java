@@ -2,6 +2,7 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_PROCESS_PUSH_REQUEST;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -21,7 +22,7 @@ import edu.cornell.library.orcidclient.auth.AccessToken;
  * 
  * If we have a valid access token, kick off the push process.
  */
-@WebServlet(urlPatterns = "/ProcessPushRequest")
+@WebServlet(name = SERVLET_PROCESS_PUSH_REQUEST, urlPatterns = "/ProcessPushRequest")
 public class ProcessPushRequestController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)

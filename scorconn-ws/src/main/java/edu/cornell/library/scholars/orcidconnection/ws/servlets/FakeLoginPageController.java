@@ -4,7 +4,7 @@ package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
 import static edu.cornell.library.scholars.orcidconnection.ws.filters.CheckAuthFilter.ATTRIBUTE_ERROR_MESSAGE;
 import static edu.cornell.library.scholars.orcidconnection.ws.filters.CheckAuthFilter.PARAMETER_TARGET_URL;
-import static edu.cornell.library.scholars.orcidconnection.ws.filters.CheckAuthFilter.SERVLET_FAKE_LOGIN_PAGE;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_FAKE_LOGIN_PAGE;
 
 import java.io.IOException;
 
