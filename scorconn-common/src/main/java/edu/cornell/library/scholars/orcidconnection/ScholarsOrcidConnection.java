@@ -5,7 +5,7 @@ package edu.cornell.library.scholars.orcidconnection;
 import java.util.List;
 import java.util.Map;
 
-import edu.cornell.library.scholars.orcidconnection.activitieslink.Publication;
+import edu.cornell.library.scholars.orcidconnection.scholarslink.Publication;
 
 /**
  * TODO

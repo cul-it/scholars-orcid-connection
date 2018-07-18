@@ -144,7 +144,7 @@ public class ProcessPushRequestController extends HttpServlet {
         private void requestAsynchronousUpdate() {
             DbLogger.writeLogEntry(INFO,
                     "Web service requests asynchronous update for %s", localId);
-            new PublicationsUpdateProcessor(localId).run();
+            new PublicationsUpdateProcessor(localId, accessToken).start();
         }
 
         private void showAcknowledgementPage() throws IOException {

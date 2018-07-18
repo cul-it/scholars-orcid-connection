@@ -1,6 +1,6 @@
 /* $This file is distributed under the terms of the license in /doc/license.txt$ */
 
-package edu.cornell.library.scholars.orcidconnection.activitieslink;
+package edu.cornell.library.scholars.orcidconnection.scholarslink;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,13 +11,13 @@ import edu.cornell.library.scholars.orcidconnection.ScholarsOrcidConnection.Ille
 /**
  * TODO
  */
-public class ActivitiesLinkImpl extends ActivitiesLink {
-    private static final Log log = LogFactory.getLog(ActivitiesLinkImpl.class);
+public class ScholarsLinkImpl extends ScholarsLink {
+    private static final Log log = LogFactory.getLog(ScholarsLinkImpl.class);
 
     /**
      * @param instance
      */
-    public ActivitiesLinkImpl(ScholarsOrcidConnection instance) {
+    public ScholarsLinkImpl(ScholarsOrcidConnection instance) {
         log.error("BOGUS -- ActivitiesLinkImpl Constructor not implemented.");
     }
 

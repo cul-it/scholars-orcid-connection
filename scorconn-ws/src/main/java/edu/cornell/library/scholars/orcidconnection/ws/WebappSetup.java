@@ -18,13 +18,13 @@ import edu.cornell.library.orcidclient.context.OrcidClientContextImpl;
 import edu.cornell.library.orcidclient.context.OrcidClientContextImpl.Setting;
 import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.scholars.orcidconnection.ScholarsOrcidConnection;
-import edu.cornell.library.scholars.orcidconnection.activitieslink.ActivitiesLink;
-import edu.cornell.library.scholars.orcidconnection.activitieslink.ActivitiesLinkImpl;
 import edu.cornell.library.scholars.orcidconnection.data.HibernateUtil;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.AccessToken;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Person;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Work;
+import edu.cornell.library.scholars.orcidconnection.scholarslink.ScholarsLink;
+import edu.cornell.library.scholars.orcidconnection.scholarslink.ScholarsLinkImpl;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.RuntimeProperties;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.StartupStatus;
 
@@ -158,11 +158,11 @@ public class WebappSetup implements ServletContextListener {
     private void initializeConnection() {
         try {
             ScholarsOrcidConnection.init(RuntimeProperties.getMap());
-            ActivitiesLink link = new ActivitiesLinkImpl(
+            ScholarsLink link = new ScholarsLinkImpl(
                     ScholarsOrcidConnection.instance());
             link.checkConnection();
         } catch (Exception e) {
-            StartupStatus.addError("Failed to initialize the ActivitiesLink",
+            StartupStatus.addError("Failed to initialize the ScholarsLink",
                     e);
         }
     }

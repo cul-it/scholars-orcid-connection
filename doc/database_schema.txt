@@ -24,8 +24,8 @@ Work
 ----
 SCHOLARS_URI PK varchar(500)
 ORCID_ID character(19) FK >- Person.ORCID_ID
+PUT_CODE varchar
 CREATED timestamp
-LAST_MODIFIED timestamp
 
 LogEntry
 -----

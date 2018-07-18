@@ -34,10 +34,62 @@ the user rescinds permission, and then grants it again.
 * The other fields may be useful for forensics. Orcid recommends that you store the JSON, for example.
 
 ### Work table
-* _Is this needed at all, except for forensics? Do we want to add multiple records on each update? Will the log handle this type of history?_
+* Holds enough information so we can see what publications were pushed, and to whose account.
+* Record is added when a publication is added or updated.
+* Multiple records may exist for a given publication. If so, the most recent should reflect the actual status.
 
 ### LogEntry table
 * Write anything important here.
+
+## Messages syntax
+
+### Request to Scholars: Get Publications for user
+
+#### Request URL
+```
+[scholarsURL]/dataRequest/listPublicationsForOrcidConnection?localID=[localID]
+```
+* Where:
+	* `scholarsURL` - the base URL for scholars, e.g. `http://scholars.cornell.edu`
+	* `localID` - the netID of the person, e.g. `jeb228`
+
+#### Response
+
+```
+[
+  {
+    "workType": "journal-article",
+    "title": "A model system for developing a tissue engineered meniscal enthesis",
+    "publicationDate": "2018-01-01",
+    "language": "en",
+    "country": "US",
+    "journalTitle": "Acta Biomaterialia",
+    "externalIds": [
+      {
+        "type": "other-id",
+        "url": "https://scholars.cornell.edu/display/UR-458129",
+        "displayValue": "Scholars@Cornell URL"
+      },
+      {
+        "type": "doi",
+        "url": "http://dx.doi.org/10.1016/j.actbio.2016.10.040",
+        "displayValue": "10.1016/j.actbio.2016.10.040"
+      }
+      ...
+    ]
+  }
+  ...
+]
+```
+* Where:
+	* Only `workType` and `title` are required by ORCID. For our purposes, at least one `externalIds` must be present, providing the Scholars URL.
+	* `workType` must be one of the types defined in [work-2.1.xsd](https://github.com/ORCID/ORCID-Source/blob/master/orcid-model/src/main/resources/record_2.0/work-2.0.xsd). For the initial implementation, it is always `journal-article`.
+	* `publicationDate` is "fuzzy", so these are all valid `2018`, `2018-12`, `2018-04-16`.
+	* `language` must be one of the values defined in [common-2.1.xsd](https://github.com/ORCID/ORCID-Source/blob/master/orcid-model/src/main/resources/common_2.1/common-2.1.xsd).
+	* `country` must be one of the values defined in [common-2.1.xsd](https://github.com/ORCID/ORCID-Source/blob/master/orcid-model/src/main/resources/common_2.1/common-2.1.xsd).
+	* `externalIds.type` must be one of the values defined in [the list of identifiers recognized by ORCID](https://pub.orcid.org/v2.0/identifiers).
+		* For the Scholars URL, `type` must be `other-id`. `displayValue` is arbitrary, but `Scholars@Cornell URL` seems reasonable.
+		* If available, add other external IDs, like `doi` or `isbn`.
 
 ## The Authorization Filter
 * __*TBD*__
@@ -65,11 +117,21 @@ the user rescinds permission, and then grants it again.
 # TO DO
 * __*Note that this contains todos for the orcid client, as well as for the orcid connection.*__
 
+## Questions for Javed
+* ORCID appears to require these elements for a journal article:
+	* required: type, title
+	* optional: 
+		* journal-title, short-description, citation, publication-date, 
+		* external-ids, url, contributors, language-code, country
+	* __Do we have these for all pubs?__
+
+
 ## Right NOW
-* Create servlet3:
-	* get the publications from scholars
-	* push them to orcid
-		* write to the log
+* Unit tests for Publication
+* Test servlet3.
+* Improve servlet3.
+	* Delete all existing works (one call?)
+	* Modify to add all in one call?
 * Create a real persistence cache
 * Create the completion URL mechanism.
 	* If present on landing, record it in the session

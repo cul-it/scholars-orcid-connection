@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  * TODO
@@ -26,14 +25,13 @@ public class Work {
     @Column(name = "ORCID_ID", nullable = false, length = 19)
     private String orcidId;
  
+    @Column(name = "PUT_CODE", nullable = false)
+    private String putCode;
+    
     @CreationTimestamp
     @Column(name = "CREATED")
     private Date created;
     
-    @UpdateTimestamp
-    @Column(name = "LAST_MODIFIED")
-    private Date lastModified;
-
     public String getScholarsUri() {
         return scholarsUri;
     }
@@ -50,12 +48,16 @@ public class Work {
         this.orcidId = orcidId;
     }
 
-    public Date getCreated() {
-        return created;
+    public String getPutCode() {
+        return putCode;
     }
 
-    public Date getLastModified() {
-        return lastModified;
+    public void setPutCode(String putCode) {
+        this.putCode = putCode;
+    }
+
+    public Date getCreated() {
+        return created;
     }
 
 }

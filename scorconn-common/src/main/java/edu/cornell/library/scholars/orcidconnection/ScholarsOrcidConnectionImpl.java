@@ -2,13 +2,14 @@
 
 package edu.cornell.library.scholars.orcidconnection;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import edu.cornell.library.scholars.orcidconnection.activitieslink.Publication;
+import edu.cornell.library.scholars.orcidconnection.scholarslink.Publication;
 
 /**
  * TODO
@@ -28,8 +29,9 @@ public class ScholarsOrcidConnectionImpl extends ScholarsOrcidConnection {
 
     @Override
     public List<Publication> getPublications(String localId) {
-        throw new RuntimeException(
-                "ScholarsOrcidConnectionImpl.getPublications() not implemented.");
+        log.error(
+                "BOGUS -- ScholarsOrcidConnectionImpl.getPublications() not implemented.");
+        return Collections.emptyList();
     }
 
 }
