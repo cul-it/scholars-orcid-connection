@@ -5,6 +5,7 @@ package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 import static edu.cornell.library.scholars.orcidconnection.ws.filters.CheckAuthFilter.ATTRIBUTE_ERROR_MESSAGE;
 import static edu.cornell.library.scholars.orcidconnection.ws.filters.CheckAuthFilter.PARAMETER_TARGET_URL;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_FAKE_LOGIN_PAGE;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_FAKE_LOGIN_PAGE;
 
 import java.io.IOException;
 
@@ -30,7 +31,7 @@ public class FakeLoginPageController extends HttpServlet {
         new PageRenderer(req, resp)
                 .setValue(PARAMETER_TARGET_URL, figureTargetUrl(req))
                 .setValue("message", req.getAttribute(ATTRIBUTE_ERROR_MESSAGE))
-                .render("/templates/fakeLoginPage.twig.html");
+                .render(TEMPLATE_FAKE_LOGIN_PAGE);
     }
 
     private Object figureTargetUrl(HttpServletRequest req) {

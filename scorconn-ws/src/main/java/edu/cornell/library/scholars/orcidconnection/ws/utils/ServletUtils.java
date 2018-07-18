@@ -20,6 +20,14 @@ public class ServletUtils {
     public static final String SERVLET_STARTUP_STATUS_PAGE = "StartupStatusPage";
     public static final String SERVLET_PROCESS_PUSH_REQUEST = "ProcessPushRequest";
 
+    public static final String TEMPLATE_FAKE_LOGIN_PAGE = "/templates/fakeLoginPage.twig.html";
+    public static final String TEMPLATE_LANDING_PAGE = "/templates/landingPage.twig.html";
+    public static final String TEMPLATE_ERROR_PAGE = "/templates/errorPage.twig.html";
+    public static final String TEMPLATE_USER_DENIED_ACCESS_PAGE = "/templates/userDeniedAccessPage.twig.html";
+    public static final String TEMPLATE_ACKNOWLEDGE_PUSH_PROCESSING_PAGE = "/templates/acknowledgePushProcessingPage.twig.html";
+    public static final String TEMPLATE_INVALID_TOKEN_PAGE = "/templates/invalidTokenPage.twig.html";
+    public static final String TEMPLATE_STARTUP_STATUS_PAGE = "/templates/startupStatusPage.twig.html";
+
     private static final String ATTRIBUTE_COMPLETION_URL = ServletUtils.class
             .getName() + "CompletionUrl";
 

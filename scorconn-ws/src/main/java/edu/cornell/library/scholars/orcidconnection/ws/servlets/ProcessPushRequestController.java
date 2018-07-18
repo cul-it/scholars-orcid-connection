@@ -5,6 +5,8 @@ package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 import static edu.cornell.library.orcidclient.actions.ApiScope.PERSON_UPDATE;
 import static edu.cornell.library.orcidclient.auth.AccessToken.NO_TOKEN;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_PROCESS_PUSH_REQUEST;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_ACKNOWLEDGE_PUSH_PROCESSING_PAGE;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_INVALID_TOKEN_PAGE;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
 
 import java.io.IOException;
@@ -42,6 +44,7 @@ import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 @WebServlet(name = SERVLET_PROCESS_PUSH_REQUEST, urlPatterns = "/ProcessPushRequest")
 public class ProcessPushRequestController extends HttpServlet {
     private static final String SERVLET_URL = "/ProcessPushRequest";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
@@ -132,7 +135,7 @@ public class ProcessPushRequestController extends HttpServlet {
         private void showInvalidTokenPage() throws IOException {
             new PageRenderer(req, resp) //
                     .setValue("localId", getLocalId(req))
-                    .render("/templates/invalidTokenPage.twig.html");
+                    .render(TEMPLATE_INVALID_TOKEN_PAGE);
         }
 
         private void requestAsynchronousUpdate() {
@@ -142,7 +145,7 @@ public class ProcessPushRequestController extends HttpServlet {
         private void showAcknowledgementPage() throws IOException {
             new PageRenderer(req, resp) //
                     .setValue("localId", getLocalId(req))
-                    .render("/templates/acknowledgePushProcessingPage.twig.html");
+                    .render(TEMPLATE_ACKNOWLEDGE_PUSH_PROCESSING_PAGE);
         }
     }
 }

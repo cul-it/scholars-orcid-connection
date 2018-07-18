@@ -3,6 +3,8 @@
 package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_PROCESS_PUSH_REQUEST;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_ERROR_PAGE;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_USER_DENIED_ACCESS_PAGE;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getAuthorizationClient;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
 
@@ -61,13 +63,13 @@ public class OrcidAuthCallbackController extends HttpServlet {
             } else if (progress.getState() == State.DENIED) {
                 log.info("User " + getLocalId(req) + " denied authorization.");
                 new PageRenderer(req, resp) //
-                        .render("/templates/userDeniedAccessPage.twig.html");
+                        .render(TEMPLATE_USER_DENIED_ACCESS_PAGE);
             } else {
                 log.error("OAuth dance failed. Progress is: " + progress);
                 new PageRenderer(req, resp) //
                         .setValue("message",
                                 "ORCID Authentication process failed.")
-                        .render("/templates/errorPage.twig.html");
+                        .render(TEMPLATE_ERROR_PAGE);
             }
         } catch (OrcidClientException e) {
             throw new ServletException(e);

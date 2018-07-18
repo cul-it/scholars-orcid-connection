@@ -2,6 +2,7 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_LANDING_PAGE;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.setCompletionUrl;
 
@@ -38,7 +39,7 @@ public class LandingPageController extends HttpServlet {
 
         new PageRenderer(req, resp) //
                 .setValue("localId", getLocalId(req))
-                .render("/templates/landingPage.twig.html");
+                .render(TEMPLATE_LANDING_PAGE);
     }
 
 }

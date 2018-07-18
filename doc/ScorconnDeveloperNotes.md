@@ -9,8 +9,10 @@
 
 ## Database design
 
-### Created using [QuickDBD](https://www.quickdatabasediagrams.com/)
-* ![database design](./QuickDBD-Scholars-ORCID Connection.png)
+* Diagram created using [QuickDBD](https://www.quickdatabasediagrams.com/)
+
+	![database design](./QuickDBD-Scholars-ORCID Connection.png)
+
 * [Source file](./database_schema.txt)
 
 ### Person table

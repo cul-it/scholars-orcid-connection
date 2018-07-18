@@ -3,6 +3,7 @@
 package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_STARTUP_STATUS_PAGE;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_STARTUP_STATUS_PAGE;
 
 import java.io.IOException;
 
@@ -26,7 +27,7 @@ public class StartupStatusPageController extends HttpServlet {
             throws ServletException, IOException {
         new PageRenderer(req, resp).setStatusCode(500)
                 .setValue("status", StartupStatus.getInstance())
-                .render("/templates/startupStatusPage.twig.html");
+                .render(TEMPLATE_STARTUP_STATUS_PAGE);
     }
 
 }
