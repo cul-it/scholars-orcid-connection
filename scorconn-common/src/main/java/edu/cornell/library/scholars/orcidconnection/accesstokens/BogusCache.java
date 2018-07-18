@@ -52,9 +52,9 @@ public class BogusCache implements AuthorizationStateProgressCache {
     private AuthorizationStateProgress buildTheDummyEntry() {
         try {
             AccessToken token = AccessToken.parse("{" //
-                    + "\"access_token\":\"16df9202-5fb5-417b-af31-08c9a806a48c\","
+                    + "\"access_token\":\"2147393a-3f88-4d53-9409-f3f1f86a97c4\","
                     + "\"token_type\":\"bearer\","
-                    + "\"refresh_token\":\"d119a571-2b68-42a3-aa17-d93559e2a750\","
+                    + "\"refresh_token\":\"68ba737a-90be-4cc9-9ab4-d4989b653437\","
                     + "\"expires_in\":631138518,"
                     + "\"scope\":\"/person/update\","
                     + "\"name\":\"James1 Blake\","

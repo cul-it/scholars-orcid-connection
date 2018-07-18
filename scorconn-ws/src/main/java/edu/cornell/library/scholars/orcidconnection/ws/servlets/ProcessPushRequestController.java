@@ -4,6 +4,7 @@ package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
 import static edu.cornell.library.orcidclient.actions.ApiScope.PERSON_UPDATE;
 import static edu.cornell.library.orcidclient.auth.AccessToken.NO_TOKEN;
+import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Severity.INFO;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_PROCESS_PUSH_REQUEST;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_ACKNOWLEDGE_PUSH_PROCESSING_PAGE;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_INVALID_TOKEN_PAGE;
@@ -55,6 +56,7 @@ public class ProcessPushRequestController extends HttpServlet {
     private static class ServletCore {
         private final HttpServletRequest req;
         private final HttpServletResponse resp;
+        private final String localId;
         private final OrcidClientContext occ;
         private final BogusCache cache;
         private final OrcidAuthorizationClient authClient;
@@ -64,8 +66,9 @@ public class ProcessPushRequestController extends HttpServlet {
         public ServletCore(HttpServletRequest req, HttpServletResponse resp) {
             this.req = req;
             this.resp = resp;
+            this.localId = getLocalId(req);
             this.occ = OrcidClientContext.getInstance();
-            this.cache = BogusCache.getCache(req, getLocalId(req));
+            this.cache = BogusCache.getCache(req, localId);
             this.authClient = new OrcidAuthorizationClient(occ, cache,
                     new BaseHttpWrapper());
         }
@@ -134,17 +137,19 @@ public class ProcessPushRequestController extends HttpServlet {
 
         private void showInvalidTokenPage() throws IOException {
             new PageRenderer(req, resp) //
-                    .setValue("localId", getLocalId(req))
+                    .setValue("localId", localId)
                     .render(TEMPLATE_INVALID_TOKEN_PAGE);
         }
 
         private void requestAsynchronousUpdate() {
-            new PublicationsUpdateProcessor(getLocalId(req)).run();
+            DbLogger.writeLogEntry(INFO,
+                    "Web service requests asynchronous update for %s", localId);
+            new PublicationsUpdateProcessor(localId).run();
         }
 
         private void showAcknowledgementPage() throws IOException {
             new PageRenderer(req, resp) //
-                    .setValue("localId", getLocalId(req))
+                    .setValue("localId", localId)
                     .render(TEMPLATE_ACKNOWLEDGE_PUSH_PROCESSING_PAGE);
         }
     }

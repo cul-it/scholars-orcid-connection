@@ -61,6 +61,9 @@ public class OrcidAuthCallbackController extends HttpServlet {
                         .getNamedDispatcher(SERVLET_PROCESS_PUSH_REQUEST);
                 dispatcher.forward(req, resp);
             } else if (progress.getState() == State.DENIED) {
+                DbLogger.writeLogEntry(Severity.INFO,
+                        "User %s denied authorization: %s", getLocalId(req),
+                        progress.getAccessToken());
                 log.info("User " + getLocalId(req) + " denied authorization.");
                 new PageRenderer(req, resp) //
                         .render(TEMPLATE_USER_DENIED_ACCESS_PAGE);

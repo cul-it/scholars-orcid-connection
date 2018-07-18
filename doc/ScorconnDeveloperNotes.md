@@ -66,14 +66,6 @@ the user rescinds permission, and then grants it again.
 * __*Note that this contains todos for the orcid client, as well as for the orcid connection.*__
 
 ## Right NOW
-* Put template filenames into ServletUtils, or create a base class/interface for Servlets and Filters
-* Create servlet2:
-	* reacts to that button.
-	* If no accessToken for the user, get accessToken
-		* Create callback servlet that updates the persistence cache or expresses regrets to the user (with optional completion URL)
-		* write to the log
-	* request servlet3 to push for that user
-		* write to the log
 * Create servlet3:
 	* get the publications from scholars
 	* push them to orcid
@@ -96,6 +88,7 @@ the user rescinds permission, and then grants it again.
 		* Ask the local system for a person's publications
 		* Ask ORCID for current publications
 		* Tell ORCID to add/update/delete publications
+* Make the templates just a little prettier. Make them more modular.
 
 ## Real SOON
 * Remove the confusion in the purpose of the cache. 
