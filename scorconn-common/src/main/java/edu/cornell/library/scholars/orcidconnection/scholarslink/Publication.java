@@ -22,6 +22,9 @@ import edu.cornell.library.orcidclient.orcid_message_2_1.work.WorkType;
 /**
  * A transition-layer object that holds the info between the received JSON
  * publications, and the ORCID WorkElement instances.
+ * 
+ * The iternal structure should remain hidden. The function is to translate
+ * from JSON to WorkElement and back again.
  */
 public class Publication {
     // ----------------------------------------------------------------------
@@ -106,11 +109,12 @@ public class Publication {
 
     @Override
     public String toString() {
-        return "Publication [workType=" + workType + ", title=" + title
-                + ", publicationDate=" + Arrays.toString(publicationDate)
-                + ", language=" + language + ", country=" + country
-                + ", journalTitle=" + journalTitle + ", externalIds="
-                + externalIds + "]";
+        return String.format(
+                "Publication[workType=%s, title=%s, publicationDate=%s, "
+                        + "language=%s, country=%s, journalTitle=%s, "
+                        + "externalIds=%s]",
+                workType, title, Arrays.toString(publicationDate), language,
+                country, journalTitle, externalIds);
     }
 
     // ----------------------------------------------------------------------
@@ -121,6 +125,13 @@ public class Publication {
         private String type;
         private String url;
         private String displayValue;
+
+        @Override
+        public String toString() {
+            return String.format("ExternalId[type=%s, url=%s, displayValue=%s]",
+                    type, url, displayValue);
+        }
+
     }
 
     private static class Parser {
