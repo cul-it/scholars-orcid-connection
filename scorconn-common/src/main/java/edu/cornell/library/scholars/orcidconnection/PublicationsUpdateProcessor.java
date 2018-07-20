@@ -60,30 +60,26 @@ public class PublicationsUpdateProcessor extends Thread {
 
     @Override
     public synchronized void run() {
-        List<Publication> pubsNow = ScholarsOrcidConnection.instance()
-                .getPublications(localId);
-        DbLogger.writeLogEntry(INFO, "Pushing %d publications for %s",
-                pubsNow.size(), localId);
+        try {
+            List<Publication> pubsNow = ScholarsOrcidConnection.instance()
+                    .getPublications(localId);
+            log.info(String.format("Pushing %d publications for %s",
+                    pubsNow.size(), localId));
 
-        for (Publication pub : pubsNow) {
-            pushOne(pub);
+            for (Publication pub : pubsNow) {
+                pushOne(pub);
+            }
+        } catch (Exception e) {
+            log.error("Failed to push publications", e);
         }
-
     }
 
-    private void pushOne(Publication pub) {
-        try {
-            WorkElement work = pub.toOrcidWork();
-            String putCode = actions.createEditWorksAction().add(accessToken,
-                    work);
-            writePubToDB(pub, putCode);
-            DbLogger.writeLogEntry(INFO,
-                    "Pushed publication %s, put code was %s",
-                    pub.getScholarsUri(), putCode);
-        } catch (OrcidClientException e) {
-            log.error(e);
-            throw new RuntimeException(e);
-        }
+    private void pushOne(Publication pub) throws OrcidClientException {
+        WorkElement work = pub.toOrcidWork();
+        String putCode = actions.createEditWorksAction().add(accessToken, work);
+        writePubToDB(pub, putCode);
+        DbLogger.writeLogEntry(INFO, "Pushed publication %s, put code was %s",
+                pub.getScholarsUri(), putCode);
     }
 
     private void writePubToDB(Publication pub, String putCode) {

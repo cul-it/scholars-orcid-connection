@@ -2,7 +2,7 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
-import static edu.cornell.library.orcidclient.actions.ApiScope.PERSON_UPDATE;
+import static edu.cornell.library.orcidclient.actions.ApiScope.ACTIVITIES_UPDATE;
 import static edu.cornell.library.orcidclient.auth.AccessToken.NO_TOKEN;
 import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Severity.INFO;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_PROCESS_PUSH_REQUEST;
@@ -93,7 +93,7 @@ public class ProcessPushRequestController extends HttpServlet {
 
         private void getAccessTokenFromCache() {
             try {
-                progress = cache.getByScope(PERSON_UPDATE);
+                progress = cache.getByScope(ACTIVITIES_UPDATE);
                 if (progress == null) {
                     accessToken = NO_TOKEN;
                 } else {
@@ -112,7 +112,7 @@ public class ProcessPushRequestController extends HttpServlet {
             try {
                 URI callback = new URI(occ.getCallbackUrl());
                 resp.sendRedirect(authClient.buildAuthorizationCall(
-                        authClient.createProgressObject(PERSON_UPDATE, callback,
+                        authClient.createProgressObject(ACTIVITIES_UPDATE, callback,
                                 callback)));
             } catch (URISyntaxException e) {
                 throw new RuntimeException(

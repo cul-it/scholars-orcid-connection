@@ -2,10 +2,12 @@
 
 package edu.cornell.library.scholars.orcidconnection.scholarslink;
 
+import edu.cornell.library.scholars.orcidconnection.ScholarsOrcidException;
+
 /**
  * Problem somewhere with the ScholarsLink
  */
-public class ScholarsLinkException extends Exception {
+public class ScholarsLinkException extends ScholarsOrcidException {
     public ScholarsLinkException(String message) {
         super(message);
     }

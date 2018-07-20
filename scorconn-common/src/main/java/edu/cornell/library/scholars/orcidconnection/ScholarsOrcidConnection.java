@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.cornell.library.scholars.orcidconnection.scholarslink.Publication;
+import edu.cornell.library.scholars.orcidconnection.scholarslink.ScholarsLinkException;
 
 /**
  * TODO
@@ -32,7 +33,7 @@ public abstract class ScholarsOrcidConnection {
         }
     }
 
-    public abstract List<Publication> getPublications(String localId);
+    public abstract List<Publication> getPublications(String localId) throws ScholarsLinkException;
 
     public class IllegalPropertiesException extends Exception {
 

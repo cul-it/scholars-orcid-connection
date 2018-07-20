@@ -39,6 +39,9 @@ the user rescinds permission, and then grants it again.
 * Multiple records may exist for a given publication. If so, the most recent should reflect the actual status.
 
 ### LogEntry table
+* __*TBD*__
+	* Anything that changes the database should be logged here.
+	* Anything that fails to change the database should not be logged here.
 * Write anything important here.
 
 ## Messages syntax
@@ -91,6 +94,9 @@ the user rescinds permission, and then grants it again.
 		* For the Scholars URL, `type` must be `other-id`. `displayValue` is arbitrary, but `Scholars@Cornell URL` seems reasonable.
 		* If available, add other external IDs, like `doi` or `isbn`.
 
+### Request from Scholars: Get status of user
+* __*TBD*__
+
 ## The Authorization Filter
 * __*TBD*__
 * Not hooked up to CUWebAuth? Pretend
@@ -106,9 +112,11 @@ the user rescinds permission, and then grants it again.
 
 ## Acceptance test cases
 ### Web service
+* __*TBD*__
 * User has more than one ORCID ID. Test going back and forth between them in the web service
 
 ### Batch process
+* __*TBD*__
 * User has more than one ORCID ID. Test for good warnings.
 
 ----------
@@ -124,10 +132,10 @@ the user rescinds permission, and then grants it again.
 		* journal-title, short-description, citation, publication-date, 
 		* external-ids, url, contributors, language-code, country
 	* __Do we have these for all pubs?__
+* Subtitle is an optional field. Do we have those?
 
 
 ## Right NOW
-* Unit tests for Publication
 * Test servlet3.
 * Improve servlet3.
 	* Delete all existing works (one call?)

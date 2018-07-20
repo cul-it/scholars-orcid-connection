@@ -5,7 +5,7 @@ package edu.cornell.library.scholars.orcidconnection.scholarslink;
 /**
  * The JSON data that came from Scholars is not in the correct form.
  */
-public class DataFormatException extends Exception {
+public class DataFormatException extends ScholarsLinkException {
     public DataFormatException(String message) {
         super(message);
     }
