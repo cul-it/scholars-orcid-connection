@@ -15,14 +15,14 @@ public class DbLogger {
      * Write to the LogEntry table in the database. Provide a message format and
      * args, as for String.format();
      */
-    public static void writeLogEntry(LogEntry.Severity severity,
+    public static void writeLogEntry(LogEntry.Category category,
             String messageFormat, Object... args) {
         SessionFactory factory = HibernateUtil.getSessionFactory();
         try (Session session = factory.openSession()) {
             session.beginTransaction();
 
             LogEntry entry = new LogEntry();
-            entry.setSeverity(severity);
+            entry.setCategory(category);
             entry.setMessage(String.format(messageFormat, args));
             session.save(entry);
 

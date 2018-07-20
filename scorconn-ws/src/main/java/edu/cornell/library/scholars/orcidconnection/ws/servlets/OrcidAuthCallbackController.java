@@ -27,7 +27,7 @@ import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.orcidclient.util.ParameterMap;
 import edu.cornell.library.scholars.orcidconnection.accesstokens.BogusCache;
 import edu.cornell.library.scholars.orcidconnection.data.DbLogger;
-import edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Severity;
+import edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Category;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 
 /**
@@ -54,16 +54,13 @@ public class OrcidAuthCallbackController extends HttpServlet {
                     .getProgressById(req.getParameter("state"));
 
             if (progress.getState() == State.SUCCESS) {
-                DbLogger.writeLogEntry(Severity.INFO,
+                DbLogger.writeLogEntry(Category.ACCESS,
                         "User %s granted authorization: %s", getLocalId(req),
                         progress.getAccessToken());
                 RequestDispatcher dispatcher = req.getServletContext()
                         .getNamedDispatcher(SERVLET_PROCESS_PUSH_REQUEST);
                 dispatcher.forward(req, resp);
             } else if (progress.getState() == State.DENIED) {
-                DbLogger.writeLogEntry(Severity.INFO,
-                        "User %s denied authorization: %s", getLocalId(req),
-                        progress.getAccessToken());
                 log.info("User " + getLocalId(req) + " denied authorization.");
                 new PageRenderer(req, resp) //
                         .render(TEMPLATE_USER_DENIED_ACCESS_PAGE);

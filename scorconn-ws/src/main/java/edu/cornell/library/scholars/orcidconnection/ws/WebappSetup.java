@@ -20,7 +20,6 @@ import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.scholars.orcidconnection.ScholarsOrcidConnection;
 import edu.cornell.library.scholars.orcidconnection.data.HibernateUtil;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.AccessToken;
-import edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Person;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Work;
 import edu.cornell.library.scholars.orcidconnection.scholarslink.ScholarsLink;
@@ -79,7 +78,6 @@ public class WebappSetup implements ServletContextListener {
                 session.save(createPerson(key));
                 session.save(createAccessToken(key));
                 session.save(createWork(key));
-                session.save(createLogEntry(key));
             }
 
             session.getTransaction().commit();
@@ -138,13 +136,6 @@ public class WebappSetup implements ServletContextListener {
         w.setOrcidId("orcid" + key);
         w.setScholarsUri("scholarsUri" + key);
         return w;
-    }
-
-    private LogEntry createLogEntry(long key) {
-        LogEntry le = new LogEntry();
-        le.setMessage("Startup smoke test: " + key);
-        le.setSeverity(LogEntry.Severity.INFO);
-        return le;
     }
 
     private void testHibernateConnection() {

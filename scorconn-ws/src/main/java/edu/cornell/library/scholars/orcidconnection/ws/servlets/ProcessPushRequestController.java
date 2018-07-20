@@ -4,7 +4,7 @@ package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
 import static edu.cornell.library.orcidclient.actions.ApiScope.ACTIVITIES_UPDATE;
 import static edu.cornell.library.orcidclient.auth.AccessToken.NO_TOKEN;
-import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Severity.INFO;
+import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Category.INFO;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_PROCESS_PUSH_REQUEST;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_ACKNOWLEDGE_PUSH_PROCESSING_PAGE;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_INVALID_TOKEN_PAGE;
@@ -20,6 +20,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import edu.cornell.library.orcidclient.actions.OrcidActionClient;
 import edu.cornell.library.orcidclient.auth.AccessToken;
 import edu.cornell.library.orcidclient.auth.AuthorizationStateProgress;
@@ -30,7 +33,7 @@ import edu.cornell.library.orcidclient.http.BaseHttpWrapper;
 import edu.cornell.library.scholars.orcidconnection.PublicationsUpdateProcessor;
 import edu.cornell.library.scholars.orcidconnection.accesstokens.BogusCache;
 import edu.cornell.library.scholars.orcidconnection.data.DbLogger;
-import edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Severity;
+import edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Category;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 
 /**
@@ -44,6 +47,9 @@ import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
  */
 @WebServlet(name = SERVLET_PROCESS_PUSH_REQUEST, urlPatterns = "/ProcessPushRequest")
 public class ProcessPushRequestController extends HttpServlet {
+    private static final Log log = LogFactory
+            .getLog(ProcessPushRequestController.class);
+
     private static final String SERVLET_URL = "/ProcessPushRequest";
 
     @Override
@@ -112,8 +118,8 @@ public class ProcessPushRequestController extends HttpServlet {
             try {
                 URI callback = new URI(occ.getCallbackUrl());
                 resp.sendRedirect(authClient.buildAuthorizationCall(
-                        authClient.createProgressObject(ACTIVITIES_UPDATE, callback,
-                                callback)));
+                        authClient.createProgressObject(ACTIVITIES_UPDATE,
+                                callback, callback)));
             } catch (URISyntaxException e) {
                 throw new RuntimeException(
                         "Orcid context returned an invalid callback URL", e);
@@ -130,8 +136,8 @@ public class ProcessPushRequestController extends HttpServlet {
         }
 
         private void recordAccessTokenNotValid() throws OrcidClientException {
-            DbLogger.writeLogEntry(Severity.INFO,
-                    "Access token was not valid: %s", accessToken);
+            DbLogger.writeLogEntry(INFO, "Access token was not valid: %s",
+                    accessToken);
             cache.store(progress.addAccessToken(NO_TOKEN));
         }
 
@@ -142,8 +148,7 @@ public class ProcessPushRequestController extends HttpServlet {
         }
 
         private void requestAsynchronousUpdate() {
-            DbLogger.writeLogEntry(INFO,
-                    "Web service requests asynchronous update for %s", localId);
+            log.info("Web service requests asynchronous update for " + localId);
             new PublicationsUpdateProcessor(localId, accessToken).start();
         }
 

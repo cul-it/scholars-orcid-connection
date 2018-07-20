@@ -2,7 +2,7 @@
 
 package edu.cornell.library.scholars.orcidconnection;
 
-import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Severity.INFO;
+import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Category.PUSHED;
 
 import java.util.List;
 
@@ -78,7 +78,7 @@ public class PublicationsUpdateProcessor extends Thread {
         WorkElement work = pub.toOrcidWork();
         String putCode = actions.createEditWorksAction().add(accessToken, work);
         writePubToDB(pub, putCode);
-        DbLogger.writeLogEntry(INFO, "Pushed publication %s, put code was %s",
+        DbLogger.writeLogEntry(PUSHED, "Pushed publication %s, put code was %s",
                 pub.getScholarsUri(), putCode);
     }
 

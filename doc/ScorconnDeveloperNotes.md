@@ -136,7 +136,6 @@ the user rescinds permission, and then grants it again.
 
 
 ## Right NOW
-* Test servlet3.
 * Improve servlet3.
 	* Delete all existing works (one call?)
 	* Modify to add all in one call?
@@ -159,6 +158,7 @@ the user rescinds permission, and then grants it again.
 		* Ask ORCID for current publications
 		* Tell ORCID to add/update/delete publications
 * Make the templates just a little prettier. Make them more modular.
+* Move calls to DbLogger close to where the write to the database is made.
 
 ## Real SOON
 * Remove the confusion in the purpose of the cache. 

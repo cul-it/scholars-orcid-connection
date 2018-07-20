@@ -25,16 +25,16 @@ import org.hibernate.annotations.CreationTimestamp;
 public class LogEntry {
     private static final Log log = LogFactory.getLog(LogEntry.class);
 
-    public enum Severity {
-        DEBUG, INFO, WARN, ERROR
+    public enum Category {
+        INFO, ERROR, ACCESS, PUSHED
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name = "SEVERITY", nullable = false, length = 10)
-    private Severity severity;
+    @Column(name = "CATEGORY", nullable = false, length = 10)
+    private Category category;
 
     @Column(name = "MESSAGE", nullable = false, length = 10000)
     private String message;
@@ -43,12 +43,12 @@ public class LogEntry {
     @Column(name = "CREATED")
     private Date created;
 
-    public Severity getSeverity() {
-        return severity;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setSeverity(Severity severity) {
-        this.severity = severity;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public String getMessage() {
