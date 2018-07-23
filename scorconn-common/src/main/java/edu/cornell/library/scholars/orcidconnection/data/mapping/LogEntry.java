@@ -26,7 +26,7 @@ public class LogEntry {
     private static final Log log = LogFactory.getLog(LogEntry.class);
 
     public enum Category {
-        INFO, ERROR, ACCESS, PUSHED
+        INFO, ERROR, ACCESS, NO_ACCESS, PUSHED, UPDATED, DELETED
     }
 
     @Id

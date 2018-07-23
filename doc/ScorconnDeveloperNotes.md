@@ -3,6 +3,7 @@
 ## Structure
 * __*TBD*__
 * Common, ORCID API Client, scorconn-ws, scorconn-cl
+	![component design](./ComponentDesign.png)
 
 ## Hibernate for persistence
 * __*TBD*__
@@ -119,6 +120,49 @@ the user rescinds permission, and then grants it again.
 * __*TBD*__
 * User has more than one ORCID ID. Test for good warnings.
 
+## JAXB and the schemas
+* __*TBD*__
+* They come from here: [the record directory](https://github.com/ORCID/ORCID-Source/tree/master/orcid-model/src/main/resources/record_2.1) and [the common directory](https://github.com/ORCID/ORCID-Source/tree/master/orcid-model/src/main/resources/common_2.1)
+
+* Copied them in, rather than accessing them remotely every time we build the project.
+
+## Have the publications changed?
+* When we obtain the list of a person's publications from Scholars@Cornell, how dop we know which ones to 
+	* add to ORCID
+	* update in ORCIR
+	* delete from ORCID
+	* ignore as unchanged
+
+* The naive approach is "delete all existing pubs, then add all current ones."
+	* This is too expensive in terms of unnecessary calls to the ORCID API.
+	* What do we do instead?
+
+* First cut:
+	* Get the list of previous publications from ORCID. 
+	* Get the list of current publications from Scholars. (`/works` summary)
+	* Determine __add__s and __delete__s by comparing the lists.
+		* Optionally, clean the database. Remove any publications that ORCID
+		isn't aware of.
+	
+* Next, separate the __update__s from the __unchanged__.
+	* Compare hashcodes between the current publications and the records in the
+	database. Any matches become __unchanged__.
+		* If a publication is not found in the database, it becomes an 
+		__update__.
+
+* With this approach, we could recreate the `Work` table in the database by
+deleting it.
+	* On the next pass, all __add__s and __update__s will be recorded. 
+	* All the pubs that should have been __ignore__s will become __update__s
+	and be recorded.
+
+* Other approaches that were discarded:
+	* __Ask ORCID__ -- get the details for each publication from ORCID, rather
+	than relying on the database to know whether the publication has changed.
+		* This is expensive in terms of reads against the API.
+	* __Assume update__ -- never ignore a publication, do an update.
+		* This is expensive in terms of writes against the API.
+
 ----------
 ----------
 
@@ -133,12 +177,29 @@ the user rescinds permission, and then grants it again.
 		* external-ids, url, contributors, language-code, country
 	* __Do we have these for all pubs?__
 * Subtitle is an optional field. Do we have those?
+* Do we want to add contributors to publications?
+	* Can hold ORCID-ID, name, email, role, and flag for FIRST or ADDITIONAL.
+* Note: we are only doing Academic Articles, even though Conference Papers are available, and ORCID would accept them.
+* IF they delete, what do we do?
+* Acceptable level of use.
 
+## Dealing with errors - A big question
+* What types of errors shold we recover from, when pushing?
+	* If the publication is rejected because the date is invalid, we should 
+	continue with other pubs.
+	* If the publication is rejected based on data syntax, what do we do?
+	* Is this a reason to push works individually, or as a group?
+	* How do we store the info from the failure?
 
 ## Right NOW
+* How does one register with Cornell on ORCID? What does it look like?
 * Improve servlet3.
-	* Delete all existing works (one call?)
-	* Modify to add all in one call?
+	* Test PushPublication
+		* Gets appropriate delete list (only our own docs)
+		* Deletes them.
+		* Adds
+			* Change dummy to produce 2 pubs.
+* Add more to the DataDistributor
 * Create a real persistence cache
 * Create the completion URL mechanism.
 	* If present on landing, record it in the session
@@ -164,7 +225,7 @@ the user rescinds permission, and then grants it again.
 * Remove the confusion in the purpose of the cache. 
 	* Should we add methods for bare get/set of access tokens?
 	* Should we create an implementation of the cache that accepts an AccessToken cache?
-* Is anyone using the Success URL and Failure URL? Can we eliminate or combine them?
+* Is anyone using the Success URL and Failure URL? Can we eliminate or combine them? Should we add a Declined URL?
 * Create a "liveness" call to ORCID
 	* context.checkOauthUrls
 	* context.checkPublicApi
@@ -175,6 +236,10 @@ the user rescinds permission, and then grants it again.
 * Rigorous checking on builders (most notably fuzzy date?) (required fields in Work?)
 * Specify either uri or (path && host) Check received data for details
 * testWebapp
+	* Improve flow of the testWebapp.
+		* Any client-based function will present the available tokens along with the function choice, and
+		the button won't be enabled until both have been chosen.
+		* Any raw function will... ?
 	* Improve structure of webapp: forms, controllers, inheritance, templates, etc.
 	* Improve the user experience in the test webapp
 		* If we turn down the noise, does it get quiet? LEVEL=Info, Warn?
@@ -190,14 +255,13 @@ the user rescinds permission, and then grants it again.
 * In WS or CL, beware of multiple ORCID IDs for one NetID.
 	* In WS, treat them as is they have no ORCID ID and require them to authenticate.
 	* In CL, skip them as if they had no ORCID ID and print a warning. Perhaps start by scanning for them.
+* Is there some way to improve the AbstractReadAction.Endpoint class? Maybe with a factory method to create a typed Endpoint?
+	
 
 ## Top level - pushing pubs
 * External identifiers
-	* We don't have identifiers DOI/ISBN for each document that we push.
-	* We can use Scholars URI as a persistent identifier
-	* What happens if we have both DOI and Scholars URI
-		* Syntactically not a problem, API accepts multiple external identifiers
-		* What if the DOI connects with another source that does not possess the Scholars URI?
+	* We use Scholars URI as the unique identifier for publications. 
+	We can add DOI or ISBN, but the Scholars URI is the decider.
 * Approach to updates
 	* Incremental approach:
 		* Read all (Scholars-based) pubs from ORCID

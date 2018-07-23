@@ -26,4 +26,16 @@ public class ScholarsLinkImpl extends ScholarsLink {
         log.error("BOGUS -- ActivitiesLink.checkConnection() not implemented.");
     }
 
+    
+    //////////////// BOGUS
+    /**
+     * <pre>
+     * Constructor requires properties map and HttpWrapper
+     * 
+     * Do it here. getPublications(localId)
+     * 
+     * Given the base Scholars URL, call api/dataRequest/listPublicationsForOrcidConnection?localID=mj495
+     * Parse the results into publications.
+     * </pre>
+     */
 }

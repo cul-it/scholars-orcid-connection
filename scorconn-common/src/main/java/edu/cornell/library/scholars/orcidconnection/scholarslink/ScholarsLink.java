@@ -8,6 +8,11 @@ import edu.cornell.library.scholars.orcidconnection.ScholarsOrcidConnection.Ille
  * TODO
  */
 public abstract class ScholarsLink {
+    private static volatile ScholarsLink instance;
+    
+    public static init(Map<String, String> properties) {
+        throw new RuntimeException("ScholarsLink.init not implemented.");
+    }
 
     public abstract void checkConnection() throws IllegalPropertiesException;
 
