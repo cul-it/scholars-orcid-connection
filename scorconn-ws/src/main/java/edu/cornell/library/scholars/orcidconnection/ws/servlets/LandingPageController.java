@@ -24,7 +24,7 @@ import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
  * If the request includes a completion URL, save it so we can return to it at
  * the end of the process.
  */
-@WebServlet(urlPatterns = "/")
+@WebServlet("/LandingPage")
 public class LandingPageController extends HttpServlet {
 
     private static final String PARAMETER_COMPLETION_URL = "completionUrl";

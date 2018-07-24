@@ -1,19 +1,21 @@
-<h1>Not secure</h1>
+<h1>DEMO - Not secured by CUWebLogin</h1>
+
+<img src="images/fake_CUWebLogin.png" style="border:solid black 2px">
 
 <p>
-  The webapp is not configured with CUWebAuth.
+  This is a demonstration site, and not secured by CUWebLogin.
 </p>
 <p>
-  Enter the site password, and the net ID you want to use.
+  To continue with the demonstration, enter the NetID you want to use, and the site password.
 </p>
 
 <form action="." method="get">
   <input type="hidden" name="targetUrl" value="{{targetUrl}}">
+  <p> 
+    NetID: <input type="text" name="fakeNetid">
+  </p>
   <p>  
     Site password: <input type="text" name="sitePassword">
-  </p>
-  <p> 
-    Net ID: <input type="text" name="fakeNetid">
   </p>
   <p>
     <input type="submit" value="Submit">

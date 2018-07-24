@@ -183,14 +183,6 @@ deleting it.
 * IF they delete, what do we do?
 * Acceptable level of use.
 
-## Dealing with errors - A big question
-* What types of errors shold we recover from, when pushing?
-	* If the publication is rejected because the date is invalid, we should 
-	continue with other pubs.
-	* If the publication is rejected based on data syntax, what do we do?
-	* Is this a reason to push works individually, or as a group?
-	* How do we store the info from the failure?
-
 ## Right NOW
 * How does one register with Cornell on ORCID? What does it look like?
 * Improve servlet3.
@@ -199,6 +191,13 @@ deleting it.
 		* Deletes them.
 		* Adds
 			* Change dummy to produce 2 pubs.
+* Improve Scholars adaptation:
+	* Add the configuring mechanism -- base URL of connection.
+	* Add the detection call
+		* Draw the tab hidden, until we know that the connection works
+		* If we have pushed already, show one thing
+		* If we have not, show the other.
+			* Make the link dynamic
 * Add more to the DataDistributor
 * Create a real persistence cache
 * Create the completion URL mechanism.
@@ -221,6 +220,14 @@ deleting it.
 * Make the templates just a little prettier. Make them more modular.
 * Move calls to DbLogger close to where the write to the database is made.
 
+## Dealing with errors - A big question
+* What types of errors shold we recover from, when pushing?
+	* If the publication is rejected because the date is invalid, we should 
+	continue with other pubs.
+	* If the publication is rejected based on data syntax, what do we do?
+	* Is this a reason to push works individually, or as a group?
+	* How do we store the info from the failure?
+
 ## Real SOON
 * Remove the confusion in the purpose of the cache. 
 	* Should we add methods for bare get/set of access tokens?
@@ -235,6 +242,10 @@ deleting it.
 	* Return 500 from filter
 * Rigorous checking on builders (most notably fuzzy date?) (required fields in Work?)
 * Specify either uri or (path && host) Check received data for details
+* Check that the user is who he says he is:
+	* NetID from CUWebLogin must match NetID from original call
+		* If no original call, skip that
+		* 
 * testWebapp
 	* Improve flow of the testWebapp.
 		* Any client-based function will present the available tokens along with the function choice, and

@@ -6,6 +6,7 @@ import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_FAKE_LOGIN_PAGE;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getExternalAuthHeaderName;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -13,6 +14,8 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -59,6 +62,9 @@ public class CheckAuthFilter implements Filter {
             .getName() + "FakeNetid";
     public static final String ATTRIBUTE_ERROR_MESSAGE = CheckAuthFilter.class
             .getName() + "ErrorMessage";
+
+    public static final Pattern[] UNRESTRICTED_URLS = new Pattern[] {
+            Pattern.compile(".*\\.png$", CASE_INSENSITIVE) };
 
     @Override
     public void init(FilterConfig arg0) throws ServletException {
@@ -113,7 +119,13 @@ public class CheckAuthFilter implements Filter {
         }
 
         private boolean requestIsForUnrestrictedMaterial() {
-            // For now, every request is restricted
+            for (Pattern p: UNRESTRICTED_URLS) {
+                Matcher m = p.matcher(req.getRequestURI());
+                if (m.matches()) {
+                    log.debug("request is unrestricted: " + p);
+                    return true;
+                }
+            }
             log.debug("request is restricted");
             return false;
         }
