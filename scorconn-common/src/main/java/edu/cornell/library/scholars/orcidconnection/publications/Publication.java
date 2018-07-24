@@ -1,6 +1,6 @@
 /* $This file is distributed under the terms of the license in /doc/license.txt$ */
 
-package edu.cornell.library.scholars.orcidconnection.scholarslink;
+package edu.cornell.library.scholars.orcidconnection.publications;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +22,7 @@ import edu.cornell.library.orcidclient.orcid_message_2_1.common.FuzzyDate.Year;
 import edu.cornell.library.orcidclient.orcid_message_2_1.common.LanguageCode;
 import edu.cornell.library.orcidclient.orcid_message_2_1.work.WorkElement;
 import edu.cornell.library.orcidclient.orcid_message_2_1.work.WorkType;
+import edu.cornell.library.scholars.orcidconnection.scholarslink.DataFormatException;
 
 /**
  * A transition-layer object that holds the info between the received JSON

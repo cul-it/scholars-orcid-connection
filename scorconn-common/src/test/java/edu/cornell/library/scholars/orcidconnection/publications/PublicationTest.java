@@ -1,6 +1,6 @@
 /* $This file is distributed under the terms of the license in /doc/license.txt$ */
 
-package edu.cornell.library.scholars.orcidconnection.scholarslink;
+package edu.cornell.library.scholars.orcidconnection.publications;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -25,6 +25,8 @@ import edu.cornell.library.orcidclient.orcid_message_2_1.common.FuzzyDate;
 import edu.cornell.library.orcidclient.orcid_message_2_1.common.LanguageCode;
 import edu.cornell.library.orcidclient.orcid_message_2_1.work.WorkElement;
 import edu.cornell.library.orcidclient.orcid_message_2_1.work.WorkType;
+import edu.cornell.library.scholars.orcidconnection.publications.Publication;
+import edu.cornell.library.scholars.orcidconnection.scholarslink.DataFormatException;
 import edu.cornell.mannlib.vitro.testing.AbstractTestClass;
 
 /**
