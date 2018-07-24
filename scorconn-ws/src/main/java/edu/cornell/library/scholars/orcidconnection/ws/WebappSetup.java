@@ -17,7 +17,7 @@ import edu.cornell.library.orcidclient.context.OrcidClientContext;
 import edu.cornell.library.orcidclient.context.OrcidClientContextImpl;
 import edu.cornell.library.orcidclient.context.OrcidClientContextImpl.Setting;
 import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
-import edu.cornell.library.scholars.orcidconnection.ScholarsOrcidConnection;
+import edu.cornell.library.orcidclient.http.BaseHttpWrapper;
 import edu.cornell.library.scholars.orcidconnection.data.HibernateUtil;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.AccessToken;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Person;
@@ -143,18 +143,13 @@ public class WebappSetup implements ServletContextListener {
                 .createQuery("FROM Person").list();
     }
 
-    /**
-     * 
-     */
     private void initializeConnection() {
         try {
-            ScholarsOrcidConnection.init(RuntimeProperties.getMap());
-            ScholarsLink link = new ScholarsLinkImpl(
-                    ScholarsOrcidConnection.instance());
-            link.checkConnection();
+            ScholarsLink.initialize(new ScholarsLinkImpl(
+                    RuntimeProperties.getMap(), new BaseHttpWrapper()));
+            ScholarsLink.instance().checkConnection();
         } catch (Exception e) {
-            StartupStatus.addError("Failed to initialize the ScholarsLink",
-                    e);
+            StartupStatus.addError("Failed to initialize the ScholarsLink", e);
         }
     }
 

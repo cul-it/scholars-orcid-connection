@@ -35,11 +35,14 @@ public class RuntimeProperties {
         Map<String, String> m = new HashMap<>();
         m.put("externalAuth.headerName", "netId");
         m.put("sitePassword", "pw");
+        
         m.put("CLIENT_ID", "APP-2I42YGFI3H4RC1YZ");
         m.put("CLIENT_SECRET", "eca5e9f7-527f-4898-a30d-996b6a635b0e");
         m.put("API_PLATFORM", "sandbox");
         m.put("WEBAPP_BASE_URL", "http://localhost:8888/scorconn-ws");
         m.put("CALLBACK_PATH", "OrcidCallback");
+        
+        m.put("scholarsBaseUrl", "http://localhost:8080/scholars");
         return m;
     }
 

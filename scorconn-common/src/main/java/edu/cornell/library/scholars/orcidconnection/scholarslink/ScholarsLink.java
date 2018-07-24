@@ -2,18 +2,65 @@
 
 package edu.cornell.library.scholars.orcidconnection.scholarslink;
 
-import edu.cornell.library.scholars.orcidconnection.ScholarsOrcidConnection.IllegalPropertiesException;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import edu.cornell.library.scholars.orcidconnection.publications.Publication;
 
 /**
- * TODO
+ * The interface used for querying Scholars.
  */
 public abstract class ScholarsLink {
-    private static volatile ScholarsLink instance;
-    
-    public static init(Map<String, String> properties) {
-        throw new RuntimeException("ScholarsLink.init not implemented.");
+    private static final Log log = LogFactory.getLog(ScholarsLink.class);
+
+    // ----------------------------------------------------------------------
+    // The factory
+    // ----------------------------------------------------------------------
+
+    private static volatile ScholarsLink instance = new ScholarsLinkNotInitialized();
+
+    public static synchronized void initialize(ScholarsLink newInstance) {
+        if (instance == null
+                || instance instanceof ScholarsLinkNotInitialized) {
+            instance = newInstance;
+            log.debug("initialized: " + instance);
+        } else {
+            throw new IllegalStateException("Already initialized: " + instance);
+        }
     }
 
-    public abstract void checkConnection() throws IllegalPropertiesException;
+    public static ScholarsLink instance() {
+        return instance;
+    }
+
+    // ----------------------------------------------------------------------
+    // The interface
+    // ----------------------------------------------------------------------
+
+    public abstract void checkConnection() throws ScholarsLinkException;
+
+    public abstract List<Publication> getPublications(String localId)
+            throws ScholarsLinkException;
+
+    // ----------------------------------------------------------------------
+    // The empty implementation
+    // ----------------------------------------------------------------------
+
+    private static class ScholarsLinkNotInitialized extends ScholarsLink {
+        private static final String MESSAGE = "ScholarsLink has not been initialized";
+
+        @Override
+        public void checkConnection() throws ScholarsLinkException {
+            throw new IllegalStateException(MESSAGE);
+        }
+
+        @Override
+        public List<Publication> getPublications(String localId)
+                throws ScholarsLinkException {
+            throw new IllegalStateException(MESSAGE);
+        }
+    }
 
 }
