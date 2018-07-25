@@ -6,10 +6,12 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  * TODO
@@ -19,45 +21,80 @@ import org.hibernate.annotations.CreationTimestamp;
 @Table(name = "Work")
 public class Work {
     @Id
-    @Column(name = "SCHOLARS_URI", unique = true, nullable = false, length = 500)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+
+    @Column(name = "SCHOLARS_URI", nullable = false, length = 500)
     private String scholarsUri;
 
     @Column(name = "ORCID_ID", nullable = false, length = 19)
     private String orcidId;
- 
-    @Column(name = "PUT_CODE", nullable = false)
-    private String putCode;
-    
-    @CreationTimestamp
-    @Column(name = "CREATED")
-    private Date created;
-    
+
+    @Column(name = "HASH", nullable = false)
+    private int hash;
+
+    @UpdateTimestamp
+    @Column(name = "TIMESTAMP")
+    private Date timeStamp;
+
+    public Work() {
+        // Required by Hibernate.
+    }
+
+    public Work(String scholarsUri, String orcidId, int hash) {
+        this.scholarsUri = scholarsUri;
+        this.orcidId = orcidId;
+        this.hash = hash;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getScholarsUri() {
         return scholarsUri;
     }
 
-    public void setScholarsUri(String scholarsUri) {
+    public Work setScholarsUri(String scholarsUri) {
         this.scholarsUri = scholarsUri;
+        return this;
     }
 
     public String getOrcidId() {
         return orcidId;
     }
 
-    public void setOrcidId(String orcidId) {
+    public Work setOrcidId(String orcidId) {
         this.orcidId = orcidId;
+        return this;
     }
 
-    public String getPutCode() {
-        return putCode;
+    public int getHash() {
+        return hash;
     }
 
-    public void setPutCode(String putCode) {
-        this.putCode = putCode;
+    public Work setHash(int hash) {
+        this.hash = hash;
+        return this;
     }
 
-    public Date getCreated() {
-        return created;
+    public Date getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(Date timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Work[id=%s, scholarsUri=%s, orcidId=%s, hash=%s, timeStamp=%s]",
+                id, scholarsUri, orcidId, hash, timeStamp);
     }
 
 }

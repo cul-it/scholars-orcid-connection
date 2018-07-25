@@ -6,30 +6,32 @@ id PK int
 LOCAL_ID varchar(10)
 ORCID_ID varchar(19)
 ORCID_NAME varchar(50)
-CREATED timestamp
+TIMESTAMP timestamp
 
 AccessToken
 -----
 id PK int
-ORCID_ID character(19) FK >- Person.ORCID_ID
+ORCID_ID character(19)
 SCOPE varchar(50)
 ACCESS_TOKEN varchar(50)
 TOKEN_TYPE varchar(10)
 REFRESH_TOKEN varchar(50)
 EXPIRES_IN bigint
 JSON varchar(500)
-CREATED timestamp
+TIMESTAMP timestamp
 
 Work
 ----
-SCHOLARS_URI PK varchar(500)
-ORCID_ID character(19) FK >- Person.ORCID_ID
-PUT_CODE varchar
-CREATED timestamp
+id PK int
+SCHOLARS_URI varchar(500)
+ORCID_ID character(19)
+HASH int
+TIMESTAMP timestamp
 
 LogEntry
 -----
 id PK int
-SEVERITY varchar(10)
-MESSAGE varchar
-CREATED timestamp
+TABLE_ int
+CATEGORY int
+MESSAGE varchar(10000)
+TIMESTAMP timestamp

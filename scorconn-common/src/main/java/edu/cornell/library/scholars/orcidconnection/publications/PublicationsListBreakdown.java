@@ -143,8 +143,8 @@ public class PublicationsListBreakdown {
         return updates.values();
     }
 
-    public Set<String> getPutCodesToDelete() {
-        return new HashSet<>(deletes.values());
+    public Map<String, String> getPublicationsToDelete() {
+        return deletes;
     }
 
     public Set<String> getPubUrisToAdd() {

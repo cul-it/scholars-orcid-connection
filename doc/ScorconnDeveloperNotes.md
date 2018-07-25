@@ -28,22 +28,22 @@
 
 ### AccessToken table
 * Holds all sorts of information about an access token. 
-* Record is added when the user grants permission for a particular scope of access. Multiple records may occur if 
-the user rescinds permission, and then grants it again.
-* If multiple records exist for an Orcid ID and scope, use the most recent.
-* Probably the only required information is ORCID\_ID, SCOPE, ACCESS\_TOKEN, and CREATED. 
+* Record is added when the user grants permission for a particular scope of access. 
+* Record is replaced if the user rescinds permission, and then grants it again.
+* Probably the only required information is ORCID\_ID, SCOPE, and ACCESS\_TOKEN. 
 * The other fields may be useful for forensics. Orcid recommends that you store the JSON, for example.
 
 ### Work table
 * Holds enough information so we can see what publications were pushed, and to whose account.
-* Record is added when a publication is added or updated.
-* Multiple records may exist for a given publication. If so, the most recent should reflect the actual status.
+* Record is added when a publication is added.
+* Record is replaced when a publication is updated.
+* The HASH permits a fast compare between the version that was pushed, and the latest version from Scholars,
+to determin whether an update is needed.
 
 ### LogEntry table
-* __*TBD*__
-	* Anything that changes the database should be logged here.
-	* Anything that fails to change the database should not be logged here.
-* Write anything important here.
+* Add a record for any change in the other tables, CATEGORY is add, update, or delete, and TABLE_ is work, 
+person, or accessToken.
+* Add a record for other significant events (such as what?). CATEGORY is INFO or ERROR, and TABLE_ is none.
 
 ## Messages syntax
 
@@ -184,6 +184,7 @@ deleting it.
 * Acceptable level of use.
 
 ## Right NOW
+* PublicationsFromDatabaseList
 * How does one register with Cornell on ORCID? What does it look like?
 * Improve servlet3.
 	* Test PushPublication
@@ -229,6 +230,9 @@ deleting it.
 	* How do we store the info from the failure?
 
 ## Real SOON
+* OrcidClientContext -- get rid of the Settings; make it in terms of Strings.
+* Rewrite the data layer to use meaningful IDs, and object-oriented updates.
+	* [look here.](https://stackoverflow.com/questions/3585034/how-to-map-a-composite-key-with-hibernate)
 * Remove the confusion in the purpose of the cache. 
 	* Should we add methods for bare get/set of access tokens?
 	* Should we create an implementation of the cache that accepts an AccessToken cache?
@@ -245,7 +249,7 @@ deleting it.
 * Check that the user is who he says he is:
 	* NetID from CUWebLogin must match NetID from original call
 		* If no original call, skip that
-		* 
+* Guard against multiple associations in Person (one to many? many to many?)
 * testWebapp
 	* Improve flow of the testWebapp.
 		* Any client-based function will present the available tokens along with the function choice, and

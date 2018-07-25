@@ -2,14 +2,10 @@
 
 package edu.cornell.library.scholars.orcidconnection;
 
-import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Category.DELETED;
-import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Category.PUSHED;
-import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Category.UPDATED;
+import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import edu.cornell.library.orcidclient.actions.OrcidActionClient;
 import edu.cornell.library.orcidclient.auth.AccessToken;
@@ -17,8 +13,8 @@ import edu.cornell.library.orcidclient.context.OrcidClientContext;
 import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.orcidclient.http.BaseHttpWrapper;
 import edu.cornell.library.orcidclient.orcid_message_2_1.work.WorkElement;
-import edu.cornell.library.scholars.orcidconnection.data.DbLogger;
-import edu.cornell.library.scholars.orcidconnection.data.HibernateUtil;
+import edu.cornell.library.scholars.orcidconnection.data.DataLayer;
+import edu.cornell.library.scholars.orcidconnection.data.DataLayerException;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Work;
 import edu.cornell.library.scholars.orcidconnection.publications.Publication;
 import edu.cornell.library.scholars.orcidconnection.publications.PublicationsFromDatabaseList;
@@ -69,8 +65,9 @@ public class PublicationsUpdateProcessor extends Thread {
             log.debug("PUBS TO DELETE:" + breakdown.getPubUrisToDelete());
             log.debug("PUBS TO IGNORE:" + breakdown.getPubUrisToIgnore());
 
-            for (String putCode : breakdown.getPutCodesToDelete()) {
-                deleteOne(putCode);
+            for (Entry<String, String> pubEntry : breakdown
+                    .getPublicationsToDelete().entrySet()) {
+                deleteOne(pubEntry.getKey(), pubEntry.getValue());
             }
             for (Publication pub : breakdown.getPublicationsToAdd()) {
                 addOne(pub);
@@ -84,42 +81,31 @@ public class PublicationsUpdateProcessor extends Thread {
         }
     }
 
-    private void deleteOne(String putCode) throws OrcidClientException {
+    private void deleteOne(String uri, String putCode)
+            throws OrcidClientException, DataLayerException {
         actions.createEditWorksAction().remove(accessToken, putCode);
-        writePubToDB(Publication.emptyPub(), putCode);
-        DbLogger.writeLogEntry(DELETED, "Deleted publication with put code %s",
-                putCode);
+        DataLayer.instance().deleteWork(uri, accessToken.getOrcid());
+        log.info(String.format("Deleted publication %s, put code was %s", uri,
+                putCode));
     }
 
-    private void addOne(Publication pub) throws OrcidClientException {
+    private void addOne(Publication pub)
+            throws OrcidClientException, DataLayerException {
         WorkElement work = pub.toOrcidWork();
         String putCode = actions.createEditWorksAction().add(accessToken, work);
-        writePubToDB(pub, putCode);
-        DbLogger.writeLogEntry(PUSHED, "Pushed publication %s, put code was %s",
-                pub.getScholarsUri(), putCode);
+        DataLayer.instance().writeWork(new Work(pub.getScholarsUri(),
+                accessToken.getOrcid(), pub.hashCode()));
+        log.info(String.format("Added publication %s, put code was %s",
+                pub.getScholarsUri(), putCode));
     }
 
     private void updateOne(String putCode, Publication pub)
-            throws OrcidClientException {
+            throws OrcidClientException, DataLayerException {
         WorkElement work = pub.toOrcidWork();
         actions.createEditWorksAction().update(accessToken, work, putCode);
-        writePubToDB(pub, putCode);
-        DbLogger.writeLogEntry(UPDATED,
-                "Pushed publication %s, put code was %s", pub.getScholarsUri(),
-                putCode);
-    }
-
-    private void writePubToDB(Publication pub, String putCode) {
-        Work w = new Work();
-        w.setOrcidId(accessToken.getOrcid());
-        w.setScholarsUri(pub.getScholarsUri());
-        w.setPutCode(putCode);
-
-        SessionFactory factory = HibernateUtil.getSessionFactory();
-        try (Session session = factory.openSession()) {
-            session.beginTransaction();
-            session.save(w);
-            session.getTransaction().commit();
-        }
+        DataLayer.instance().writeWork(new Work(pub.getScholarsUri(),
+                accessToken.getOrcid(), pub.hashCode()));
+        log.info(String.format("Updated publication %s, put code was %s",
+                pub.getScholarsUri(), putCode));
     }
 }

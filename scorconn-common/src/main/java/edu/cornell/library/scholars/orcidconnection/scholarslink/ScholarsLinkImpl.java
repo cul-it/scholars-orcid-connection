@@ -59,7 +59,7 @@ public class ScholarsLinkImpl extends ScholarsLink {
         try {
             GetRequest request = httpWrapper
                     .createGetRequest(requestUrl + "bogusNetid");
-            HttpResponse response = request.execute();
+            request.execute();
         } catch (HttpStatusCodeException | IOException e) {
             throw new ScholarsLinkException(
                     "Scholars is not available at '" + baseUrl + "'");

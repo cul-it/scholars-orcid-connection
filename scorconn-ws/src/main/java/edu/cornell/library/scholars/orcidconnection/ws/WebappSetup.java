@@ -1,6 +1,5 @@
 package edu.cornell.library.scholars.orcidconnection.ws;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,18 +9,16 @@ import javax.servlet.annotation.WebListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 import edu.cornell.library.orcidclient.context.OrcidClientContext;
 import edu.cornell.library.orcidclient.context.OrcidClientContextImpl;
 import edu.cornell.library.orcidclient.context.OrcidClientContextImpl.Setting;
 import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.orcidclient.http.BaseHttpWrapper;
+import edu.cornell.library.scholars.orcidconnection.data.DataLayer;
+import edu.cornell.library.scholars.orcidconnection.data.DataLayerException;
+import edu.cornell.library.scholars.orcidconnection.data.DataLayerImpl;
 import edu.cornell.library.scholars.orcidconnection.data.HibernateUtil;
-import edu.cornell.library.scholars.orcidconnection.data.mapping.AccessToken;
-import edu.cornell.library.scholars.orcidconnection.data.mapping.Person;
-import edu.cornell.library.scholars.orcidconnection.data.mapping.Work;
 import edu.cornell.library.scholars.orcidconnection.scholarslink.ScholarsLink;
 import edu.cornell.library.scholars.orcidconnection.scholarslink.ScholarsLinkImpl;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.RuntimeProperties;
@@ -61,29 +58,19 @@ public class WebappSetup implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent arg0) {
-        initializeOrcidContext();
         initializePersistenceCache();
-        initializeConnection();
+        initializeOrcidContext();
+        initializeScholarsLink();
         log.info("WebappSetup complete.");
     }
 
     private void initializePersistenceCache() {
-        SessionFactory factory = HibernateUtil.getSessionFactory();
-        try (Session session = factory.openSession()) {
-            session.beginTransaction();
-
-            // ALL BOGUS
-            if ("X".isEmpty()) {
-                long key = new Date().getTime();
-                session.save(createPerson(key));
-                session.save(createAccessToken(key));
-                session.save(createWork(key));
-            }
-
-            session.getTransaction().commit();
+        try {
+            DataLayer.initialize(new DataLayerImpl());
+            DataLayer.instance().checkConnection();
+        } catch (DataLayerException e) {
+            StartupStatus.addError("Failed to initialize the data layer", e);
         }
-
-        // BOGUS Create an instance of the cache.
     }
 
     private void initializeOrcidContext() {
@@ -111,39 +98,7 @@ public class WebappSetup implements ServletContextListener {
         return settings;
     }
 
-    private Person createPerson(long key) {
-        Person p = new Person();
-        p.setLocalId(("L" + key).substring(0, 10));
-        p.setOrcidId("orcid" + key);
-        p.setOrcidName("name" + key);
-        return p;
-    }
-
-    private AccessToken createAccessToken(long key) {
-        AccessToken at = new AccessToken();
-        at.setAccessToken("accessToken" + key);
-        at.setExpiresIn(key);
-        at.setJson("json" + key);
-        at.setOrcidId("orcid" + key);
-        at.setRefreshToken("refreshToken" + key);
-        at.setScope("scope" + key);
-        at.setTokenType(("type" + key).substring(0, 10));
-        return at;
-    }
-
-    private Work createWork(long key) {
-        Work w = new Work();
-        w.setOrcidId("orcid" + key);
-        w.setScholarsUri("scholarsUri" + key);
-        return w;
-    }
-
-    private void testHibernateConnection() {
-        HibernateUtil.getSessionFactory().openSession()
-                .createQuery("FROM Person").list();
-    }
-
-    private void initializeConnection() {
+    private void initializeScholarsLink() {
         try {
             ScholarsLink.initialize(new ScholarsLinkImpl(
                     RuntimeProperties.getMap(), new BaseHttpWrapper()));

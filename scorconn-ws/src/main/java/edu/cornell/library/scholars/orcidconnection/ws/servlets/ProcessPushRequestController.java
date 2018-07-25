@@ -4,7 +4,6 @@ package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
 import static edu.cornell.library.orcidclient.actions.ApiScope.ACTIVITIES_UPDATE;
 import static edu.cornell.library.orcidclient.auth.AccessToken.NO_TOKEN;
-import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Category.INFO;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_PROCESS_PUSH_REQUEST;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_ACKNOWLEDGE_PUSH_PROCESSING_PAGE;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_INVALID_TOKEN_PAGE;
@@ -32,8 +31,6 @@ import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.orcidclient.http.BaseHttpWrapper;
 import edu.cornell.library.scholars.orcidconnection.PublicationsUpdateProcessor;
 import edu.cornell.library.scholars.orcidconnection.accesstokens.BogusCache;
-import edu.cornell.library.scholars.orcidconnection.data.DbLogger;
-import edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Category;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 
 /**
@@ -49,8 +46,6 @@ import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 public class ProcessPushRequestController extends HttpServlet {
     private static final Log log = LogFactory
             .getLog(ProcessPushRequestController.class);
-
-    private static final String SERVLET_URL = "/ProcessPushRequest";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -136,8 +131,8 @@ public class ProcessPushRequestController extends HttpServlet {
         }
 
         private void recordAccessTokenNotValid() throws OrcidClientException {
-            DbLogger.writeLogEntry(INFO, "Access token was not valid: %s",
-                    accessToken);
+            log.info(String.format("Access token was not valid: %s",
+                    accessToken));
             cache.store(progress.addAccessToken(NO_TOKEN));
         }
 
