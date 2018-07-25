@@ -15,7 +15,9 @@ import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.orcidclient.http.BaseHttpWrapper;
 import edu.cornell.library.orcidclient.orcid_message_2_1.activities.WorkGroup;
 import edu.cornell.library.orcidclient.orcid_message_2_1.activities.WorksElement;
+import edu.cornell.library.orcidclient.orcid_message_2_1.common.ClientId;
 import edu.cornell.library.orcidclient.orcid_message_2_1.common.ExternalId;
+import edu.cornell.library.orcidclient.orcid_message_2_1.common.SourceType;
 import edu.cornell.library.orcidclient.orcid_message_2_1.work.WorkSummaryElement;
 
 /**
@@ -45,9 +47,18 @@ public class PublicationsFromOrcidList implements PublicationsFromOrcid {
     }
 
     private boolean isOneOfOurs(WorkSummaryElement work) {
-        String clientFromContext = getOcc().getClientId();
-        String clientFromWork = work.getSource().getSourceClientId().getPath();
-        return clientFromWork.equals(clientFromContext);
+        return getOcc().getClientId().equals(getClientIdFromWork(work));
+    }
+
+    private String getClientIdFromWork(WorkSummaryElement work) {
+        SourceType source = work.getSource();
+        if (source != null) {
+            ClientId clientId = source.getSourceClientId();
+            if (clientId != null) {
+                return clientId.getPath();
+            }
+        }
+        return null;
     }
 
     private void addToMap(WorkSummaryElement work) throws OrcidClientException {

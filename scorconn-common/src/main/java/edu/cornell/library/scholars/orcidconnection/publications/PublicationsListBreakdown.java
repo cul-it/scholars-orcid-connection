@@ -79,26 +79,28 @@ public class PublicationsListBreakdown {
 
     private boolean pubHasChanged(String uri) {
         return pubsFromScholars.hasUri(uri) && //
-                !pubsFromOrcid.hasUri(uri) //
+                pubsFromOrcid.hasUri(uri) //
                 && !pubsFromScholars.getHash(uri)
                         .equals(pubsFromDatabase.getHash(uri));
     }
 
     private boolean pubIsTheSame(String uri) {
         return pubsFromScholars.hasUri(uri) && //
-                !pubsFromOrcid.hasUri(uri) //
+                pubsFromOrcid.hasUri(uri) //
                 && pubsFromScholars.getHash(uri)
                         .equals(pubsFromDatabase.getHash(uri));
     }
 
     private boolean userDeletedFromOrcid(String uri) {
-        return pubsFromScholars.hasUri(uri) && //
-                !pubsFromOrcid.hasUri(uri) && pubsFromDatabase.hasUri(uri);
+        return pubsFromScholars.hasUri(uri) //
+                && !pubsFromOrcid.hasUri(uri) //
+                && pubsFromDatabase.hasUri(uri);
     }
 
     private boolean wasDeletedFromScholars(String uri) {
-        return !pubsFromScholars.hasUri(uri) && //
-                pubsFromOrcid.hasUri(uri) && pubsFromDatabase.hasUri(uri);
+        return !pubsFromScholars.hasUri(uri) //
+                && pubsFromOrcid.hasUri(uri) //
+                && pubsFromDatabase.hasUri(uri);
     }
 
     private Publication publicationForUri(String uri) {

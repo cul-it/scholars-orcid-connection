@@ -299,7 +299,7 @@ public class PublicationTest extends AbstractTestClass {
 
     private Object getValue(Object holder) {
         try {
-            Class c = holder.getClass();
+            Class<?> c = holder.getClass();
             Method m = c.getMethod("getValue");
             return m.invoke(holder);
         } catch (Exception e) {
@@ -307,6 +307,7 @@ public class PublicationTest extends AbstractTestClass {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private List<Map<String, Object>> getExternalIds(Map<String, Object> map) {
         return (List<Map<String, Object>>) map.get("externalIds");
     }

@@ -32,7 +32,7 @@ import edu.cornell.library.scholars.orcidconnection.scholarslink.DataFormatExcep
  * JSON to WorkElement and back again.
  */
 public class Publication {
-    
+
     // ----------------------------------------------------------------------
     // The factory
     // ----------------------------------------------------------------------
@@ -58,9 +58,9 @@ public class Publication {
     public static Publication fromWorkElement(WorkElement work) {
         return new WorkReader(work).read();
     }
-    
+
     public static final String EMPTY_TITLE = "EMPTY_PUBLICATION_TITLE";
-    
+
     public static Publication emptyPub() {
         Publication pub = new Publication();
         pub.title = EMPTY_TITLE;
@@ -143,6 +143,28 @@ public class Publication {
         private String type;
         private String url;
         private String displayValue;
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(type, url, displayValue);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (other == null) {
+                return false;
+            }
+            if (!this.getClass().equals(other.getClass())) {
+                return false;
+            }
+            ExternalId that = (ExternalId) other;
+            return Objects.equals(this.type, that.type)
+                    && Objects.equals(this.url, that.url)
+                    && Objects.equals(this.displayValue, that.displayValue);
+        }
 
         @Override
         public String toString() {
