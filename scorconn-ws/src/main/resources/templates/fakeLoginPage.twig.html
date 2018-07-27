@@ -1,6 +1,9 @@
-<h1>DEMO - Not secured by CUWebLogin</h1>
+{% extends "_parent.twig.html" %}
+{% set title = "DEMO - Not secured by CUWebLogin" %}
 
-<img src="images/fake_CUWebLogin.png" style="border:solid black 2px">
+{% block body %}
+
+<img class="fake-login-image" src="images/fake_CUWebLogin.png">
 
 <p>
   This is a demonstration site, and not secured by CUWebLogin.
@@ -27,3 +30,5 @@
   {{message}}
 </p>
 {% endif %}
+
+{% endblock body %}

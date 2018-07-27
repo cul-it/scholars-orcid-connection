@@ -4,8 +4,10 @@ package edu.cornell.library.scholars.orcidconnection.ws.filters;
 
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.FILTER_DISPLAY_STATUS;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_STARTUP_STATUS_PAGE;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -23,6 +25,11 @@ import edu.cornell.library.scholars.orcidconnection.ws.utils.StartupStatus;
  */
 @WebFilter(filterName = FILTER_DISPLAY_STATUS)
 public class DisplayStatusFilter implements Filter {
+
+    public static final Pattern[] UNRESTRICTED_URLS = new Pattern[] {
+            Pattern.compile(".*\\.png$", CASE_INSENSITIVE),
+            Pattern.compile(".*\\.css$", CASE_INSENSITIVE) };
+
     @Override
     public void init(FilterConfig config) throws ServletException {
         // Nothing to initialize
@@ -39,20 +46,17 @@ public class DisplayStatusFilter implements Filter {
         // Nothing to destroy
     }
 
-    private static class FilterCore {
-        private final ServletRequest req;
-        private final ServletResponse resp;
-        private final FilterChain chain;
+    private static class FilterCore extends AbstractFilterCore {
 
         public FilterCore(ServletRequest req, ServletResponse resp,
                 FilterChain chain) {
-            this.req = req;
-            this.resp = resp;
-            this.chain = chain;
+            super(req, resp, chain);
         }
 
         private void filter() throws IOException, ServletException {
-            if (StartupStatus.getInstance().hasErrors()) {
+            if (isRequestForUnrestrictedMaterial(UNRESTRICTED_URLS)) {
+                chain.doFilter(req, resp);
+            } else if (StartupStatus.getInstance().hasErrors()) {
                 showStartupStatusPage();
             } else {
                 chain.doFilter(req, resp);

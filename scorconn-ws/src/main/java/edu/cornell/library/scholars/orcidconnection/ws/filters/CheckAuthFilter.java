@@ -14,7 +14,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
@@ -27,8 +26,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -65,6 +62,7 @@ public class CheckAuthFilter implements Filter {
 
     public static final Pattern[] UNRESTRICTED_URLS = new Pattern[] {
             Pattern.compile(".*\\.png$", CASE_INSENSITIVE),
+            Pattern.compile(".*\\.css$", CASE_INSENSITIVE),
             Pattern.compile(".*personStatus") };
 
     @Override
@@ -86,25 +84,14 @@ public class CheckAuthFilter implements Filter {
     /**
      * This inner class is thread-safe, even with instance variables.
      */
-    private static class FilterCore {
-        private final HttpServletRequest req;
-        private final HttpServletResponse resp;
-        private final HttpSession session;
-        private final FilterChain chain;
-
+    private static class FilterCore extends AbstractFilterCore {
         FilterCore(ServletRequest req, ServletResponse resp,
                 FilterChain chain) {
-            this.req = (HttpServletRequest) req;
-            this.resp = (HttpServletResponse) resp;
-            this.session = this.req.getSession();
-            this.chain = chain;
-            
-            log.debug("Doing the filter: requestURI is '"
-                    + this.req.getRequestURI() + "'");
+            super(req, resp, chain);
         }
 
         void filter() throws IOException, ServletException {
-            if (requestIsForUnrestrictedMaterial()) {
+            if (isRequestForUnrestrictedMaterial(UNRESTRICTED_URLS)) {
                 honorTheRequest();
             } else if (requestContainsNetidHeader()) {
                 honorTheRequest();
@@ -119,18 +106,6 @@ public class CheckAuthFilter implements Filter {
             } else {
                 showFakeLoginPage();
             }
-        }
-
-        private boolean requestIsForUnrestrictedMaterial() {
-            for (Pattern p : UNRESTRICTED_URLS) {
-                Matcher m = p.matcher(req.getRequestURI());
-                if (m.matches()) {
-                    log.debug("request is unrestricted: " + p);
-                    return true;
-                }
-            }
-            log.debug("request is restricted");
-            return false;
         }
 
         private boolean requestContainsNetidHeader() {

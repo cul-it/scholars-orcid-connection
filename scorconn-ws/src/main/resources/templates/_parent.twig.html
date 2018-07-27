@@ -1,0 +1,32 @@
+<html>
+<head>
+<title>Scholars-ORCID connection: {{title}}</title>
+
+<link href="css/scorconn.css" rel="stylesheet">
+</head>
+<body>
+	<header>
+	  <div id="nav-bar">
+        <div id="nav-bar-row">
+	      <span id="nav-logo">
+            <span>
+              <img src="images/menu_logo.png" />
+            </span>
+	      </span>
+        </div>
+	  </div>
+	</header>
+
+	<div id="body">
+		<h1>{{title}}</h1>
+
+		<div class="scholars-container">
+			<div class="inside-container">
+				{% block body %}
+				<h1>SPECIFY A BODY BLOCK</h1>
+				{% endblock body %}
+			</div>
+		</div>
+	</div>
+</body>
+</html>

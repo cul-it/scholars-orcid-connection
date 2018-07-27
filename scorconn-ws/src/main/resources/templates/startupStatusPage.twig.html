@@ -1,13 +1,16 @@
-<h1>Bad status at startup</h1>
+{% extends "_parent.twig.html" %}
+{% set title = "Bad status at startup" %}
 
-{% for error in status.errors %}
+{% block body %}
+  {% for error in status.errors %}
 
-<div style="border: solid black;">
-<p>{{error.message}}</p>
+    <div">
+      <p>{{error.message}}</p>
 
-{% if (not empty(error.cause)) %}
-<p>{{error.cause}}</p>
-{% endif %}
-</div>
+      {% if (not empty(error.cause)) %}
+        <p>{{error.cause}}</p>
+      {% endif %}
+    </div>
 
-{% endfor %}
+  {% endfor %}
+{% endblock body %}

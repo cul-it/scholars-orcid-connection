@@ -1,5 +1,7 @@
-<h1>Landing page</h1>
+{% extends "_parent.twig.html" %}
+{% set title = "Landing Page" %}
 
+{% block body %}
 <form action="ProcessPushRequest" method="get">
   <input type="hidden" name="targetUrl" value="{{targetUrl}}">
   <p>  
@@ -9,3 +11,4 @@
     <input type="submit" value="Push 'em">
   </p>
 </form>
+{% endblock body %}

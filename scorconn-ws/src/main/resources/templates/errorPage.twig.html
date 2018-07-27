@@ -1,4 +1,7 @@
-<H1>ERROR PAGE</H1>
+{% extends "_parent.twig.html" %}
+{% set title = "ERROR PAGE" %}
+
+{% block body %}
 
 <p>
 A system error occurred. Please notify the system administrator.
@@ -9,3 +12,5 @@ A system error occurred. Please notify the system administrator.
   {{message}}
 </p>
 {% endif %}
+
+{% endblock body %}
