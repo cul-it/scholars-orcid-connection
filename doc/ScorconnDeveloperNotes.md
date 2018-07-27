@@ -1,7 +1,7 @@
 # Developer Notes for the Scholars-ORCID Connection (SCORconn)
 
 ## Structure
-* __*TBD*__
+* __*TBD - REplace this diagram (OAuth not part of scorconn-cl)*__
 * Common, ORCID API Client, scorconn-ws, scorconn-cl
 	![component design](./ComponentDesign.png)
 
@@ -96,7 +96,32 @@ person, or accessToken.
 		* If available, add other external IDs, like `doi` or `isbn`.
 
 ### Request from Scholars: Get status of user
-* __*TBD*__
+
+#### Request URL
+```
+[scorconnURL]/personStatus?localId=[netID]
+```
+* Where:
+	* `scorconnURL` - the base URL for the Scholars-ORCID connection server,
+   e.g. `http://scorconn.scholars.cornell.edu`
+	* `netID` - the netID of the person, e.g. `jeb228`
+
+#### Response
+```
+{
+  "orcid_id": "1234-2345-3456-4567",
+  "orcid_name": "Jim Blake",
+  "orcid_page_url": "https://sandbox.orcid.org/1234-2345-3456-4567"
+  "publications_pushed": 16,
+  "last_update": "1239083124900"
+}
+```
+* Where:
+	* If they have given us access to their Orcid page at any time, all fields will be present.
+	Otherwise, the structure will be empty.
+	* `publications_pushed` may be 0 or more.
+	* `last_update` is milliseconds past the epoch (long integer). 
+	If `publications_pushed` is 0, `last_update` will be 0 also.
 
 ## The Authorization Filter
 * __*TBD*__
@@ -184,14 +209,13 @@ deleting it.
 * Acceptable level of use.
 
 ## Right NOW
-* PublicationsFromDatabaseList
-* How does one register with Cornell on ORCID? What does it look like?
-* Improve servlet3.
-	* Test PushPublication
-		* Gets appropriate delete list (only our own docs)
-		* Deletes them.
-		* Adds
-			* Change dummy to produce 2 pubs.
+* Improve the look of the ack screen and the push screen.
+* Create a real persistence cache
+* Test pub logic:
+	* Delete a pub from ORCID site -- Modify on scholars -- push -- it is ignored
+	* Delete from the database -- push -- it is no longer ignored. 
+	* Delete from Scholars -- push -- it is deleted from ORCID.
+* Add more to the DataDistributor
 * Improve Scholars adaptation:
 	* Add the configuring mechanism -- base URL of connection.
 	* Add the detection call
@@ -199,16 +223,13 @@ deleting it.
 		* If we have pushed already, show one thing
 		* If we have not, show the other.
 			* Make the link dynamic
-* Add more to the DataDistributor
-* Create a real persistence cache
+* Implement the API request for status of a user (push date, count, active auth)
 * Create the completion URL mechanism.
 	* If present on landing, record it in the session
 	* If present on terminal pages, offer as a link
 * Implement the startup sequence for scorconn-ws
 	* Load the startup parameters
-	* Test the database connection
 	* Test the ORCID connection
-	* Test the scholars connection
 * Define the interactions
 	* Requests from outside
 		* For a given LocalId (netID), what's the most recent push date?
@@ -230,7 +251,9 @@ deleting it.
 	* How do we store the info from the failure?
 
 ## Real SOON
+* How does one register with Cornell on ORCID? What does it look like?
 * OrcidClientContext -- get rid of the Settings; make it in terms of Strings.
+	* Include the Base URL as one of the URLs derived from "sandbox" or "production": https://sandbox.orcid.org
 * Rewrite the data layer to use meaningful IDs, and object-oriented updates.
 	* [look here.](https://stackoverflow.com/questions/3585034/how-to-map-a-composite-key-with-hibernate)
 * Remove the confusion in the purpose of the cache. 

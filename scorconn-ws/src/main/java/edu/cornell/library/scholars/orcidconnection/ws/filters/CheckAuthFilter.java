@@ -64,7 +64,8 @@ public class CheckAuthFilter implements Filter {
             .getName() + "ErrorMessage";
 
     public static final Pattern[] UNRESTRICTED_URLS = new Pattern[] {
-            Pattern.compile(".*\\.png$", CASE_INSENSITIVE) };
+            Pattern.compile(".*\\.png$", CASE_INSENSITIVE),
+            Pattern.compile(".*personStatus") };
 
     @Override
     public void init(FilterConfig arg0) throws ServletException {
@@ -74,7 +75,6 @@ public class CheckAuthFilter implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp,
             FilterChain chain) throws IOException, ServletException {
-        log.debug("Doing the filter!!");
         new FilterCore(req, resp, chain).filter();
     }
 
@@ -98,6 +98,9 @@ public class CheckAuthFilter implements Filter {
             this.resp = (HttpServletResponse) resp;
             this.session = this.req.getSession();
             this.chain = chain;
+            
+            log.debug("Doing the filter: requestURI is '"
+                    + this.req.getRequestURI() + "'");
         }
 
         void filter() throws IOException, ServletException {
@@ -119,7 +122,7 @@ public class CheckAuthFilter implements Filter {
         }
 
         private boolean requestIsForUnrestrictedMaterial() {
-            for (Pattern p: UNRESTRICTED_URLS) {
+            for (Pattern p : UNRESTRICTED_URLS) {
                 Matcher m = p.matcher(req.getRequestURI());
                 if (m.matches()) {
                     log.debug("request is unrestricted: " + p);
