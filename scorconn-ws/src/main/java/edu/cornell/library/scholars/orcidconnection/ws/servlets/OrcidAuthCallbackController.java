@@ -2,9 +2,6 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_PROCESS_PUSH_REQUEST;
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_ERROR_PAGE;
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_USER_DENIED_ACCESS_PAGE;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getAuthorizationClient;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
 
@@ -26,6 +23,7 @@ import edu.cornell.library.orcidclient.auth.OrcidAuthorizationClient;
 import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.orcidclient.util.ParameterMap;
 import edu.cornell.library.scholars.orcidconnection.accesstokens.BogusCache;
+import edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 
 /**
@@ -35,7 +33,8 @@ import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
  * page, with option to go to completion. Otherwise, show error page.
  */
 @WebServlet(urlPatterns = "/OrcidCallback")
-public class OrcidAuthCallbackController extends HttpServlet {
+public class OrcidAuthCallbackController extends HttpServlet
+        implements WebServerConstants {
     public static final String ATTRIBUTE_BOGUS_CACHE = "BogusCache";
     private static final Log log = LogFactory
             .getLog(OrcidAuthCallbackController.class);

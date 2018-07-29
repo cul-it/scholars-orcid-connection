@@ -2,8 +2,7 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.filters;
 
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.FILTER_CHECK_AUTH;
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_FAKE_LOGIN_PAGE;
+import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.FILTER_CHECK_AUTH;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getExternalAuthHeaderName;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
@@ -31,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.RuntimeProperties;
 
 /**
@@ -46,7 +46,7 @@ import edu.cornell.library.scholars.orcidconnection.ws.utils.RuntimeProperties;
  * file for the fake login page. For now, there are no such requests.
  */
 @WebFilter(filterName = FILTER_CHECK_AUTH)
-public class CheckAuthFilter implements Filter {
+public class CheckAuthFilter implements Filter, WebServerConstants {
     private static final Log log = LogFactory.getLog(CheckAuthFilter.class);
 
     public static final String PARAMETER_TARGET_URL = "targetUrl";

@@ -2,7 +2,6 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_LANDING_PAGE;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.setCompletionUrl;
 
@@ -16,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 
+import edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 
 /**
@@ -25,7 +25,8 @@ import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
  * the end of the process.
  */
 @WebServlet("/LandingPage")
-public class LandingPageController extends HttpServlet {
+public class LandingPageController extends HttpServlet
+        implements WebServerConstants {
 
     private static final String PARAMETER_COMPLETION_URL = "completionUrl";
 
@@ -39,7 +40,8 @@ public class LandingPageController extends HttpServlet {
 
         new PageRenderer(req, resp) //
                 .setValue("localId", getLocalId(req))
-                .render(TEMPLATE_LANDING_PAGE);
+                .setValue("formActionUrl", SERVLET_PROCESS_PUSH_REQUEST)
+                .render(TEMPLATE_LANDING_WITH_TOKEN_PAGE);
     }
 
 }

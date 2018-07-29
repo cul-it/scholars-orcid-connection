@@ -4,9 +4,7 @@ package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
 import static edu.cornell.library.orcidclient.actions.ApiScope.ACTIVITIES_UPDATE;
 import static edu.cornell.library.orcidclient.auth.AccessToken.NO_TOKEN;
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_PROCESS_PUSH_REQUEST;
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_ACKNOWLEDGE_PUSH_PROCESSING_PAGE;
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_INVALID_TOKEN_PAGE;
+import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.SERVLET_PROCESS_PUSH_REQUEST;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
 
 import java.io.IOException;
@@ -31,6 +29,7 @@ import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.orcidclient.http.BaseHttpWrapper;
 import edu.cornell.library.scholars.orcidconnection.PublicationsUpdateProcessor;
 import edu.cornell.library.scholars.orcidconnection.accesstokens.BogusCache;
+import edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 
 /**
@@ -43,7 +42,8 @@ import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
  * If we have a valid access token, kick off the push process.
  */
 @WebServlet(name = SERVLET_PROCESS_PUSH_REQUEST, urlPatterns = "/ProcessPushRequest")
-public class ProcessPushRequestController extends HttpServlet {
+public class ProcessPushRequestController extends HttpServlet
+        implements WebServerConstants {
     private static final Log log = LogFactory
             .getLog(ProcessPushRequestController.class);
 
@@ -139,7 +139,8 @@ public class ProcessPushRequestController extends HttpServlet {
         private void showInvalidTokenPage() throws IOException {
             new PageRenderer(req, resp) //
                     .setValue("localId", localId)
-                    .render(TEMPLATE_INVALID_TOKEN_PAGE);
+                    .setValue("formActionUrl", SERVLET_PROCESS_PUSH_REQUEST)
+                    .render(TEMPLATE_LANDING_INVALID_TOKEN_PAGE);
         }
 
         private void requestAsynchronousUpdate() {

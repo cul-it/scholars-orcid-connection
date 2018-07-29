@@ -2,8 +2,7 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.filters;
 
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.FILTER_DISPLAY_STATUS;
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_STARTUP_STATUS_PAGE;
+import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.FILTER_DISPLAY_STATUS;
 import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 import java.io.IOException;
@@ -18,13 +17,14 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
+import edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.StartupStatus;
 
 /**
  * TODO
  */
 @WebFilter(filterName = FILTER_DISPLAY_STATUS)
-public class DisplayStatusFilter implements Filter {
+public class DisplayStatusFilter implements Filter, WebServerConstants {
 
     public static final Pattern[] UNRESTRICTED_URLS = new Pattern[] {
             Pattern.compile(".*\\.png$", CASE_INSENSITIVE),

@@ -2,10 +2,9 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
+import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.SERVLET_FAKE_LOGIN_PAGE;
 import static edu.cornell.library.scholars.orcidconnection.ws.filters.CheckAuthFilter.ATTRIBUTE_ERROR_MESSAGE;
 import static edu.cornell.library.scholars.orcidconnection.ws.filters.CheckAuthFilter.PARAMETER_TARGET_URL;
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.SERVLET_FAKE_LOGIN_PAGE;
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.TEMPLATE_FAKE_LOGIN_PAGE;
 
 import java.io.IOException;
 
@@ -17,13 +16,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 
+import edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 
 /**
  * Display a fake login page, in case we are configured without CUWebAuth.
  */
 @WebServlet(name = SERVLET_FAKE_LOGIN_PAGE, urlPatterns = "/fakeLogin")
-public class FakeLoginPageController extends HttpServlet {
+public class FakeLoginPageController extends HttpServlet
+        implements WebServerConstants {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)

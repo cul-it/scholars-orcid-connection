@@ -25,13 +25,15 @@ import edu.cornell.library.scholars.orcidconnection.data.DataLayer;
 import edu.cornell.library.scholars.orcidconnection.data.DataLayerException;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Person;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Work;
+import edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants;
 
 /**
  * Respond to a request for status. Tell whether we have heard of the person,
  * and if so what we have done for him.
  */
 @WebServlet("/personStatus")
-public class PersonStatusApiController extends HttpServlet {
+public class PersonStatusApiController extends HttpServlet
+        implements WebServerConstants {
     private static final Log log = LogFactory
             .getLog(PersonStatusApiController.class);
 
