@@ -1,0 +1,15 @@
+{% extends "_parent.twig.html" %}
+{% set title = "Scholars@Cornell has permission" %}
+
+{% block body %}
+<form action="{{formActionUrl}}" method="get">
+  <p>  
+    Scholars@Cornell already has permission to load publications to 
+    <a href="{{orcidIdUrl}}">{{orcidId}}</a>.
+  </p>
+  <p>
+    Click to 
+    <input type="submit" value="Update publications list in ORCID">
+  </p>
+</form>
+{% endblock body %}

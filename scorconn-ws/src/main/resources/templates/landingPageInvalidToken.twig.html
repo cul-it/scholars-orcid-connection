@@ -1,0 +1,22 @@
+{% extends "_parent.twig.html" %}
+{% set title = "Permission was rescinded" %}
+
+{% block body %}
+<form action="{{formActionUrl}}" method="get">
+  <p>  
+    It appears that Scholars@Cornell had permission to load publications to
+    <a href="{{orcidIdUrl}}">{{orcidId}}</a>,
+    but that permission was rescinded.
+    <br>
+  <p>  
+    If you click the button below, you will be asked to login to your ORCID account. 
+  </p>
+  <p>  
+    When you have logged in, you will be asked to grant this permission again.
+  </p>
+  <p>
+    <input type="submit" value="Go to ORCID">
+  </p>
+</form>
+
+{% endblock body %}

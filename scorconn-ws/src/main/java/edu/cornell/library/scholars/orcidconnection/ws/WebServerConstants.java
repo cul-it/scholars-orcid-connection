@@ -15,8 +15,8 @@ public interface WebServerConstants {
 
     static final String TEMPLATE_FAKE_LOGIN_PAGE = "/templates/fakeLoginPage.twig.html";
     static final String TEMPLATE_LANDING_WITHOUT_TOKEN_PAGE = "/templates/landingPageNoToken.twig.html";
-    static final String TEMPLATE_LANDING_WITH_TOKEN_PAGE = "/templates/landingWithTokenPage.twig.html";
-    static final String TEMPLATE_LANDING_INVALID_TOKEN_PAGE = "/templates/landingWithInvalidTokenPage.twig.html";
+    static final String TEMPLATE_LANDING_WITH_TOKEN_PAGE = "/templates/landingPageValidToken.twig.html";
+    static final String TEMPLATE_LANDING_INVALID_TOKEN_PAGE = "/templates/landingPageInvalidToken.twig.html";
     static final String TEMPLATE_ERROR_PAGE = "/templates/errorPage.twig.html";
     static final String TEMPLATE_USER_DENIED_ACCESS_PAGE = "/templates/userDeniedAccessPage.twig.html";
     static final String TEMPLATE_ACKNOWLEDGE_PUSH_PROCESSING_PAGE = "/templates/acknowledgePushProcessingPage.twig.html";

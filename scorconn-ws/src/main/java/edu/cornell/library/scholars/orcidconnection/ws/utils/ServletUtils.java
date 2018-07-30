@@ -39,6 +39,11 @@ public class ServletUtils {
         return new OrcidAuthorizationClient(occ, cache, httpWrapper);
     }
 
+    public static String getOrcidRecordPageUrl(String orcidId) {
+        // BOGUS
+        return OrcidClientContext.getInstance().getApiPublicUrl() + orcidId;
+    }
+
     private ServletUtils() {
         // No need to instantiate.
     }

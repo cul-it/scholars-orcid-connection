@@ -16,19 +16,10 @@
 * Acceptable level of use.
 
 ## Right NOW
-* Improve the look of the ack screen and the push screen.
-	* Landing page: 
-		* look for permission. If found, check that it is still active.
-		* If no access, 
-			* "When you click the button, you will see the ORCID login.
-				* Unless you're alrady logged in
-			* "When you have logged in, you will be asked to authorize
-		* If inactive access,
-			* "Our records indicate that our permission to access ORCID record
-			* When you click, you will see the ORCID login...
-		* If active access
-			* we already have permission, so when you click the button, 
-	* Trash the landingPage template, and invalid
+* Fix ServletUtils.getOrcidRecordPageUrl()
+
+* Create real RuntimeProperties
+
 * Clean up the muddy cache situation: 
 	* OrcidAuthClient should always use a session-based progress cache
 	* The progress cache should accept an AccessTokenCache
@@ -78,6 +69,7 @@
 	* How do we store the info from the failure?
 
 ## Real SOON
+* OrcidAuthCallbackController should never render a result or even forward - it should always redirect.
 * Open the ORCID connection in a pop-up window.
 * Get a better date for "last updated". 
 	* Store in AccessToken as "VERIFIED" column, with timestamp.
@@ -180,3 +172,6 @@
 ## Don't Forget
 * Test for an assortment of errors by modifying the form data
 
+## Other docs
+* [Developer Notes](./ScorconnDeveloperNotes.md)
+* [Acceptance tests](./ScorconnAcceptanceTesting.md)

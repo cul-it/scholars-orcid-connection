@@ -2,6 +2,8 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getOrcidRecordPageUrl;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,7 +22,6 @@ import org.apache.commons.logging.LogFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.cornell.library.orcidclient.context.OrcidClientContext;
 import edu.cornell.library.scholars.orcidconnection.data.DataLayer;
 import edu.cornell.library.scholars.orcidconnection.data.DataLayerException;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Person;
@@ -68,8 +69,7 @@ public class PersonStatusApiController extends HttpServlet
 
         String orcidId = person.getOrcidId();
         String orcidName = person.getOrcidName();
-        String orcidPageUrl = OrcidClientContext.getInstance().getApiPublicUrl()
-                + orcidId;
+        String orcidPageUrl = getOrcidRecordPageUrl(orcidId);
 
         List<Work> works = DataLayer.instance().findWorks(orcidId);
         int count = works.size();

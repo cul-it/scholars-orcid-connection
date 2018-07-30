@@ -179,8 +179,6 @@ deleting it.
 	* __Assume update__ -- never ignore a publication, do an update.
 		* This is expensive in terms of writes against the API.
 
-## Acceptance test cases
-[Here](./ScorconnAcceptanceTesting.md)
-
-## TO DO
-[Here](./Scorconn_TO_DO.md)
+## Other docs
+* [Acceptance tests](./ScorconnAcceptanceTesting.md)
+* [To-do list](./Scorconn_TO_DO.md)

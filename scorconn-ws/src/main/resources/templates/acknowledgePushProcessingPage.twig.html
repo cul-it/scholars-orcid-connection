@@ -1,6 +1,13 @@
 {% extends "_parent.twig.html" %}
-{% set title = "BOGUS DEFAULT ACKNOWLEDGE PUSH PROCESSING PAGE" %}
+{% set title = "Publications transfer in progress" %}
 
 {% block body %}
-<!-- Say, "we're pushing your publications".  If there is a completion URL, offer a link. -->
+<p>  
+  You have granted permssion for Scholars@Cornell to transfer publications to your ORCID record.
+</p>
+<p>  
+  The publications should appear at 
+  <a href="{{orcidIdUrl}}">{{orcidId}}</a>
+  within a few minutes.
+</p>
 {% endblock body %}

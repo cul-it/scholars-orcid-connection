@@ -6,6 +6,7 @@ import static edu.cornell.library.orcidclient.actions.ApiScope.ACTIVITIES_UPDATE
 import static edu.cornell.library.orcidclient.auth.AccessToken.NO_TOKEN;
 import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.SERVLET_PROCESS_PUSH_REQUEST;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getOrcidRecordPageUrl;
 
 import java.io.IOException;
 import java.net.URI;
@@ -20,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import edu.cornell.library.orcidclient.actions.OrcidActionClient;
 import edu.cornell.library.orcidclient.auth.AccessToken;
 import edu.cornell.library.orcidclient.auth.AuthorizationStateProgress;
 import edu.cornell.library.orcidclient.auth.OrcidAuthorizationClient;
@@ -75,20 +75,12 @@ public class ProcessPushRequestController extends HttpServlet
         }
 
         private void doGet() throws IOException {
-            try {
-                getAccessTokenFromCache();
-                if (!isAccessTokenPresent()) {
-                    redirectIntoThreeLeggedOauthDance();
-                } else if (!isAccessTokenStillValid()) {
-                    recordAccessTokenNotValid();
-                    showInvalidTokenPage();
-                } else {
-                    requestAsynchronousUpdate();
-                    showAcknowledgementPage();
-                }
-            } catch (OrcidClientException e) {
-                throw new RuntimeException("Failed to process the push request",
-                        e);
+            getAccessTokenFromCache();
+            if (!isAccessTokenPresent()) {
+                redirectIntoThreeLeggedOauthDance();
+            } else {
+                requestAsynchronousUpdate();
+                showAcknowledgementPage();
             }
         }
 
@@ -124,33 +116,17 @@ public class ProcessPushRequestController extends HttpServlet
             }
         }
 
-        private boolean isAccessTokenStillValid() throws OrcidClientException {
-            OrcidActionClient actionClient = new OrcidActionClient(occ,
-                    new BaseHttpWrapper());
-            return actionClient.isAccessTokenValid(accessToken);
-        }
-
-        private void recordAccessTokenNotValid() throws OrcidClientException {
-            log.info(String.format("Access token was not valid: %s",
-                    accessToken));
-            cache.store(progress.addAccessToken(NO_TOKEN));
-        }
-
-        private void showInvalidTokenPage() throws IOException {
-            new PageRenderer(req, resp) //
-                    .setValue("localId", localId)
-                    .setValue("formActionUrl", SERVLET_PROCESS_PUSH_REQUEST)
-                    .render(TEMPLATE_LANDING_INVALID_TOKEN_PAGE);
-        }
-
         private void requestAsynchronousUpdate() {
             log.info("Web service requests asynchronous update for " + localId);
             new PublicationsUpdateProcessor(localId, accessToken).start();
         }
 
         private void showAcknowledgementPage() throws IOException {
+            String orcid = accessToken.getOrcid();
             new PageRenderer(req, resp) //
                     .setValue("localId", localId)
+                    .setValue("orcidId", orcid)
+                    .setValue("orcidIdUrl", getOrcidRecordPageUrl(orcid))
                     .render(TEMPLATE_ACKNOWLEDGE_PUSH_PROCESSING_PAGE);
         }
     }

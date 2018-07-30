@@ -1,0 +1,19 @@
+{% extends "_parent.twig.html" %}
+{% set title = "Scholars@Cornell requires permission" %}
+
+{% block body %}
+<form action="{{formActionUrl}}" method="get">
+  <p>  
+    Scholars@Cornell needs permission to push publications to your ORCID record.
+  </p>
+  <p>  
+    When you click the button below, you will be asked to login to your ORCID account. 
+  </p>
+  <p>  
+    When you have logged in, you will be asked to grant this permission.
+  </p>
+  <p>
+    <input type="submit" value="Go to ORCID">
+  </p>
+</form>
+{% endblock body %}
