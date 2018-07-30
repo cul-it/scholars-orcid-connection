@@ -40,8 +40,7 @@ public class ServletUtils {
     }
 
     public static String getOrcidRecordPageUrl(String orcidId) {
-        // BOGUS
-        return OrcidClientContext.getInstance().getApiPublicUrl() + orcidId;
+        return OrcidClientContext.getInstance().getSiteBaseUrl() + orcidId;
     }
 
     private ServletUtils() {
