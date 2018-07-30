@@ -9,6 +9,7 @@
 | Go to Connection | See CUWebAuth login page |
 | Login with Cornell NetId | See the page: "Scholars requires permission" |
 | Click __Go to ORCID__, login to ORCID and __grant permission__ | See the page: "Publications transfer in progress"
+| Follow the link to the user's ORCID record | See the publications |
 
 | User has not authorized, declines | |
 | --- | --- |
@@ -25,6 +26,7 @@
 | Go to Connection | See CUWebAuth login page |
 | Login with Cornell NetId | See the page: "Scholars has permission" |
 | Click __Update publications list in ORCID__ | See the page: "Publications transfer in progress"
+| Follow the link to the user's ORCID record | See the publications |
 
 | User has authorized and rescinded | |
 | --- | --- |
@@ -36,6 +38,7 @@
 
 * __*TBD*__
 * User has more than one ORCID ID. Test going back and forth between them in the web service
+* User deletes Scholars@Cornell source from a pub on ORCID record. Scholars@Cornell will not put it back.
 
 ## Batch process
 * __*TBD*__

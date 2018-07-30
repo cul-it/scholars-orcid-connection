@@ -22,6 +22,7 @@ import edu.cornell.library.scholars.orcidconnection.data.HibernateUtil;
 import edu.cornell.library.scholars.orcidconnection.scholarslink.ScholarsLink;
 import edu.cornell.library.scholars.orcidconnection.scholarslink.ScholarsLinkImpl;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.RuntimeProperties;
+import edu.cornell.library.scholars.orcidconnection.ws.utils.RuntimeProperties.RuntimePropertiesException;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.StartupStatus;
 
 @WebListener
@@ -58,10 +59,19 @@ public class WebappSetup implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent arg0) {
+        initializeRuntimeProperties();
         initializePersistenceCache();
         initializeOrcidContext();
         initializeScholarsLink();
         log.info("WebappSetup complete.");
+    }
+
+    private void initializeRuntimeProperties() {
+        try {
+            RuntimeProperties.initialize();
+        } catch (RuntimePropertiesException e) {
+            StartupStatus.addError("Failed to initialize the runtime properties", e);
+        }
     }
 
     private void initializePersistenceCache() {
@@ -72,7 +82,7 @@ public class WebappSetup implements ServletContextListener {
             StartupStatus.addError("Failed to initialize the data layer", e);
         }
     }
-
+    
     private void initializeOrcidContext() {
         Map<Setting, String> settings = convertToSettings(
                 RuntimeProperties.getMap());

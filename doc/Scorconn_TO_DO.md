@@ -16,19 +16,15 @@
 * Acceptable level of use.
 
 ## Right NOW
-* Fix ServletUtils.getOrcidRecordPageUrl()
-
-* Create real RuntimeProperties
-
 * Clean up the muddy cache situation: 
 	* OrcidAuthClient should always use a session-based progress cache
 	* The progress cache should accept an AccessTokenCache
 * Clean up the AuthToken testing
-	* Remove the tests from ProcessPushRequestController
 	* PersonStatusApiController should look at the AccessToken date as well
 	as the Work dates
-	* LandingPageController tests and updates
 * Create a real persistence cache
+* Clean up ProcessPushRequestController
+	* Use AbstractServletCore
 * Test pub logic:
 	* Delete a pub from ORCID site -- Modify on scholars -- push -- it is ignored
 	* Delete from the database -- push -- it is no longer ignored. 
@@ -48,17 +44,6 @@
 * Implement the startup sequence for scorconn-ws
 	* Load the startup parameters
 	* Test the ORCID connection
-* Define the interactions
-	* Requests from outside
-		* For a given LocalId (netID), what's the most recent push date?
-		* Walk through the authorization process for a given LocalId and a given scope
-		* Push the pubs for a given LocalId
-	* Requests to outside
-		* Ask the local system for a person's publications
-		* Ask ORCID for current publications
-		* Tell ORCID to add/update/delete publications
-* Make the templates just a little prettier. Make them more modular.
-* Move calls to DbLogger close to where the write to the database is made.
 
 ## Dealing with errors - A big question
 * What types of errors shold we recover from, when pushing?

@@ -4,11 +4,11 @@
 {% block body %}
   {% for error in status.errors %}
 
-    <div">
+    <div>
       <p>{{error.message}}</p>
 
       {% if (not empty(error.cause)) %}
-        <p>{{error.cause}}</p>
+        <ul><li>{{error.cause}}</li></ul>
       {% endif %}
     </div>
 
