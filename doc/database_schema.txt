@@ -8,10 +8,11 @@ ORCID_ID varchar(19)
 ORCID_NAME varchar(50)
 TIMESTAMP timestamp
 
-AccessToken
+Token
 -----
 id PK int
 ORCID_ID character(19)
+ORCID_NAME varchar
 SCOPE varchar(50)
 ACCESS_TOKEN varchar(50)
 TOKEN_TYPE varchar(10)

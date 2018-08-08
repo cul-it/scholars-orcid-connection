@@ -26,7 +26,7 @@
 		and reporting a list of complaints.
 * Otherwise, if there is more than one record for a local ID, use the most recent.
 
-### AccessToken table
+### Token table
 * Holds all sorts of information about an access token. 
 * Record is added when the user grants permission for a particular scope of access. 
 * Record is replaced if the user rescinds permission, and then grants it again.
@@ -42,7 +42,7 @@ to determin whether an update is needed.
 
 ### LogEntry table
 * Add a record for any change in the other tables, CATEGORY is add, update, or delete, and TABLE_ is work, 
-person, or accessToken.
+person, or token.
 * Add a record for other significant events (such as what?). CATEGORY is INFO or ERROR, and TABLE_ is none.
 
 ## Messages syntax

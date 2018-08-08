@@ -26,7 +26,7 @@ public class LogEntry {
     private static final Log log = LogFactory.getLog(LogEntry.class);
 
     public enum Table {
-        NONE, ACCESS_TOKEN, PERSON, WORK
+        NONE, TOKEN, PERSON, WORK
     }
 
     public enum Category {

@@ -3,7 +3,7 @@
 package edu.cornell.library.scholars.orcidconnection.data;
 
 import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Category.ADD;
-import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Table.ACCESS_TOKEN;
+import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Table.TOKEN;
 import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Table.PERSON;
 import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Table.WORK;
 
@@ -15,7 +15,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import edu.cornell.library.scholars.orcidconnection.data.mapping.AccessToken;
+import edu.cornell.library.scholars.orcidconnection.data.mapping.Token;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Person;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Work;
@@ -35,27 +35,26 @@ public class DataLayerImpl extends DataLayer {
     }
 
     @Override
-    public void writeAccessToken(AccessToken accessToken)
-            throws DataLayerException {
+    public void writeAccessToken(Token accessToken) throws DataLayerException {
         deleteThese(findAccessTokens(accessToken.getOrcidId(),
                 accessToken.getScope()));
         writeToDatabase(s -> {
             s.save(accessToken);
         });
-        writeLogEntry(new LogEntry(ACCESS_TOKEN, ADD, accessToken.toString()));
+        writeLogEntry(new LogEntry(TOKEN, ADD, accessToken.toString()));
     }
 
     @Override
-    public AccessToken findAccessToken(String orcidId, String scope)
+    public Token findAccessToken(String orcidId, String scope)
             throws DataLayerException {
         return justOne(findAccessTokens(orcidId, scope));
     }
 
-    private List<AccessToken> findAccessTokens(String orcidId, String scope)
+    private List<Token> findAccessTokens(String orcidId, String scope)
             throws DataLayerException {
         return readFromDatabase(s -> {
-            String hql = "FROM AccessToken WHERE orcidId = :orcidId AND scope = :scope";
-            Query<AccessToken> query = s.createQuery(hql, AccessToken.class);
+            String hql = "FROM Token WHERE orcidId = :orcidId AND scope = :scope";
+            Query<Token> query = s.createQuery(hql, Token.class);
             query.setParameter("orcidId", orcidId);
             query.setParameter("scope", scope);
             return query;

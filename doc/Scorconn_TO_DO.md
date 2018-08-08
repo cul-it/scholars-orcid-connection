@@ -36,16 +36,9 @@
 			* Different depending on status: schedule the update, or login to ORCID and ask permission
 			* Both require CUWebLogin
 	* At completion, link back to Scholars profile page.
-* AccessToken table contains no OrcidName (or whatever name is in AccessToken)
-	* Fix AccessTokenCacheDataLayerImpl.
-	* Change AccessToken table to Token table
 * Clean up the AuthToken testing
 	* PersonStatusApiController should look at the AccessToken date as well
 	as the Work dates
-* In the data layer, AccessToken table becomes Token table. The class changes too.
-* Create a real persistence cache
-* Clean up ProcessPushRequestController
-	* Use AbstractServletCore
 * Test pub logic:
 	* Delete a pub from ORCID site -- Modify on scholars -- push -- it is ignored
 	* Delete from the database -- push -- it is no longer ignored. 

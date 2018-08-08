@@ -9,9 +9,10 @@ import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.scholars.orcidconnection.data.DataLayer;
 import edu.cornell.library.scholars.orcidconnection.data.DataLayerException;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Person;
+import edu.cornell.library.scholars.orcidconnection.data.mapping.Token;
 
 /**
- * TODO
+ * An implementation of AccessTokenCache based on the Hibernate data layer.
  */
 public class AccessTokenCacheDataLayerImpl implements AccessTokenCache {
 
@@ -38,12 +39,10 @@ public class AccessTokenCacheDataLayerImpl implements AccessTokenCache {
         try {
             DataLayer.instance().writePerson(
                     new Person(localId, token.getOrcid(), token.getName()));
-            DataLayer.instance().writeAccessToken(
-                    new edu.cornell.library.scholars.orcidconnection.data.mapping.AccessToken(
-                            token.getOrcid(), token.getScope().getScope(),
-                            token.getToken(), token.getType(),
-                            token.getRefreshToken(), token.getExpiresIn(),
-                            token.getJsonString()));
+            DataLayer.instance().writeAccessToken(new Token(token.getOrcid(),
+                    token.getName(), token.getScope().getScope(),
+                    token.getToken(), token.getType(), token.getRefreshToken(),
+                    token.getExpiresIn(), token.getJsonString()));
         } catch (DataLayerException e) {
             throw new OrcidClientException("Failed to write the access token.",
                     e);
@@ -57,8 +56,7 @@ public class AccessTokenCacheDataLayerImpl implements AccessTokenCache {
             if (person == null) {
                 return null;
             }
-            edu.cornell.library.scholars.orcidconnection.data.mapping.AccessToken token = DataLayer
-                    .instance()
+            Token token = DataLayer.instance()
                     .findAccessToken(person.getOrcidId(), scope.getScope());
             if (token == null) {
                 return null;
@@ -66,7 +64,7 @@ public class AccessTokenCacheDataLayerImpl implements AccessTokenCache {
                 return new AccessToken(token.getJson(), token.getAccessToken(),
                         token.getTokenType(), token.getRefreshToken(),
                         token.getExpiresIn(), ApiScope.parse(token.getScope()),
-                        "BOGUS", token.getOrcidId());
+                        token.getOrcidName(), token.getOrcidId());
             }
         } catch (DataLayerException e) {
             throw new OrcidClientException("Failed to read the access token.",

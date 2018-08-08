@@ -17,8 +17,8 @@ import org.hibernate.annotations.UpdateTimestamp;
  * TODO
  */
 @Entity
-@Table(name = "AccessToken")
-public class AccessToken {
+@Table(name = "Token")
+public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -26,6 +26,9 @@ public class AccessToken {
     // Should be a foreign key Person.OrcidId
     @Column(name = "ORCID_ID", nullable = false, length = 19)
     private String orcidId;
+
+    @Column(name = "ORCID_NAME", nullable = false)
+    private String orcidName;
 
     @Column(name = "SCOPE", nullable = false, length = 50)
     private String scope;
@@ -49,14 +52,15 @@ public class AccessToken {
     @Column(name = "TIMESTAMP")
     private Date timeStamp;
 
-    public AccessToken() {
+    public Token() {
         // Required by Hibernate.
     }
 
-    public AccessToken(String orcidId, String scope, String accessToken,
-            String tokenType, String refreshToken, long expiresIn,
-            String json) {
+    public Token(String orcidId, String orcidName, String scope,
+            String accessToken, String tokenType, String refreshToken,
+            long expiresIn, String json) {
         this.orcidId = orcidId;
+        this.orcidName = orcidName;
         this.scope = scope;
         this.accessToken = accessToken;
         this.tokenType = tokenType;
@@ -77,8 +81,17 @@ public class AccessToken {
         return orcidId;
     }
 
-    public AccessToken setOrcidId(String orcidId) {
+    public Token setOrcidId(String orcidId) {
         this.orcidId = orcidId;
+        return this;
+    }
+
+    public String getOrcidName() {
+        return orcidName;
+    }
+
+    public Token setOrcidName(String orcidName) {
+        this.orcidName = orcidName;
         return this;
     }
 
@@ -86,7 +99,7 @@ public class AccessToken {
         return scope;
     }
 
-    public AccessToken setScope(String scope) {
+    public Token setScope(String scope) {
         this.scope = scope;
         return this;
     }
@@ -95,7 +108,7 @@ public class AccessToken {
         return accessToken;
     }
 
-    public AccessToken setAccessToken(String accessToken) {
+    public Token setAccessToken(String accessToken) {
         this.accessToken = accessToken;
         return this;
     }
@@ -104,7 +117,7 @@ public class AccessToken {
         return tokenType;
     }
 
-    public AccessToken setTokenType(String tokenType) {
+    public Token setTokenType(String tokenType) {
         this.tokenType = tokenType;
         return this;
     }
@@ -113,7 +126,7 @@ public class AccessToken {
         return refreshToken;
     }
 
-    public AccessToken setRefreshToken(String refreshToken) {
+    public Token setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
         return this;
     }
@@ -122,7 +135,7 @@ public class AccessToken {
         return expiresIn;
     }
 
-    public AccessToken setExpiresIn(long expiresIn) {
+    public Token setExpiresIn(long expiresIn) {
         this.expiresIn = expiresIn;
         return this;
     }
@@ -131,7 +144,7 @@ public class AccessToken {
         return json;
     }
 
-    public AccessToken setJson(String json) {
+    public Token setJson(String json) {
         this.json = json;
         return this;
     }
@@ -147,11 +160,11 @@ public class AccessToken {
     @Override
     public String toString() {
         return String.format(
-                "AccessToken[id=%s, orcidId=%s, scope=%s, accessToken=%s, "
-                        + "tokenType=%s, refreshToken=%s, expiresIn=%s, "
-                        + "json=%s, timeStamp=%s]",
-                id, orcidId, scope, accessToken, tokenType, refreshToken,
-                expiresIn, json, timeStamp);
+                "AccessToken[id=%s, orcidId=%s, orcidName=%s, scope=%s, "
+                        + "accessToken=%s, tokenType=%s, refreshToken=%s, "
+                        + "expiresIn=%s, json=%s, timeStamp=%s]",
+                id, orcidId, orcidName, scope, accessToken, tokenType,
+                refreshToken, expiresIn, json, timeStamp);
     }
 
 }

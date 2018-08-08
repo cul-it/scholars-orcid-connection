@@ -7,17 +7,16 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import edu.cornell.library.scholars.orcidconnection.data.mapping.AccessToken;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Person;
+import edu.cornell.library.scholars.orcidconnection.data.mapping.Token;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Work;
-import edu.cornell.library.scholars.orcidconnection.scholarslink.ScholarsLink;
 
 /**
  * A wrapper around the persistence layer.
  */
 public abstract class DataLayer {
-    private static final Log log = LogFactory.getLog(ScholarsLink.class);
+    private static final Log log = LogFactory.getLog(DataLayer.class);
 
     // ----------------------------------------------------------------------
     // The factory
@@ -44,10 +43,10 @@ public abstract class DataLayer {
 
     public abstract void checkConnection() throws DataLayerException;
 
-    public abstract void writeAccessToken(AccessToken accessToken)
+    public abstract void writeAccessToken(Token accessToken)
             throws DataLayerException;
 
-    public abstract AccessToken findAccessToken(String localId, String scope)
+    public abstract Token findAccessToken(String localId, String scope)
             throws DataLayerException;
 
     public abstract void writePerson(Person person) throws DataLayerException;
@@ -81,12 +80,12 @@ public abstract class DataLayer {
         }
 
         @Override
-        public void writeAccessToken(AccessToken accessToken) {
+        public void writeAccessToken(Token accessToken) {
             throw new IllegalStateException(MESSAGE);
         }
 
         @Override
-        public AccessToken findAccessToken(String localId, String scope) {
+        public Token findAccessToken(String localId, String scope) {
             throw new IllegalStateException(MESSAGE);
         }
 

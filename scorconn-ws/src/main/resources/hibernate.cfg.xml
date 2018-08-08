@@ -13,7 +13,7 @@
 		<mapping
 			class="edu.cornell.library.scholars.orcidconnection.data.mapping.Person"></mapping>
 		<mapping
-			class="edu.cornell.library.scholars.orcidconnection.data.mapping.AccessToken"></mapping>
+			class="edu.cornell.library.scholars.orcidconnection.data.mapping.Token"></mapping>
 		<mapping
 			class="edu.cornell.library.scholars.orcidconnection.data.mapping.Work"></mapping>
 		<mapping
