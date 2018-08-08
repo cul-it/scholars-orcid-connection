@@ -16,12 +16,33 @@
 * Acceptable level of use.
 
 ## Right NOW
-* Clean up the muddy cache situation: 
-	* OrcidAuthClient should always use a session-based progress cache
-	* The progress cache should accept an AccessTokenCache
+
+### ORCID client
+* Look at their JAXB model: 
+	* https://groups.google.com/forum/#!msg/orcid-api-users/U8YyD-Nn4rs/ikS_0Ui1BQAJ
+	* https://github.com/ORCID/orcid-conversion-lib
+	* https://github.com/ORCID/orcid-conversion-lib/tree/master/orcid-model
+
+### SCORconn
+* Modify ProcessPushRequestController to provide more meaningful URL than the callback URL
+	* Would the callback controller be able to use those URLs
+* Change the flow:
+	* Button on the profile page, if service is up
+	* Page (through page management?)
+		* DataGetter
+		* Show current status
+		* Explain everything
+		* Provide a button.
+			* Different depending on status: schedule the update, or login to ORCID and ask permission
+			* Both require CUWebLogin
+	* At completion, link back to Scholars profile page.
+* AccessToken table contains no OrcidName (or whatever name is in AccessToken)
+	* Fix AccessTokenCacheDataLayerImpl.
+	* Change AccessToken table to Token table
 * Clean up the AuthToken testing
 	* PersonStatusApiController should look at the AccessToken date as well
 	as the Work dates
+* In the data layer, AccessToken table becomes Token table. The class changes too.
 * Create a real persistence cache
 * Clean up ProcessPushRequestController
 	* Use AbstractServletCore
@@ -37,13 +58,12 @@
 		* If we have pushed already, show one thing
 		* If we have not, show the other.
 			* Make the link dynamic
-* Implement the API request for status of a user (push date, count, active auth)
 * Create the completion URL mechanism.
 	* If present on landing, record it in the session
 	* If present on terminal pages, offer as a link
-* Implement the startup sequence for scorconn-ws
-	* Load the startup parameters
-	* Test the ORCID connection
+* Should ServletUtils disappear in favor of AbstractServletCore?
+* OrcidAuthorizationClient.checkConnection() should become static
+	* If we don't need to instantiate, we don't need any caches -- WebappSetup
 
 ## Dealing with errors - A big question
 * What types of errors shold we recover from, when pushing?
@@ -59,21 +79,8 @@
 * Get a better date for "last updated". 
 	* Store in AccessToken as "VERIFIED" column, with timestamp.
 * How does one register with Cornell on ORCID? What does it look like?
-* OrcidClientContext -- get rid of the Settings; make it in terms of Strings.
-	* Include the Base URL as one of the URLs derived from "sandbox" or "production": https://sandbox.orcid.org
 * Rewrite the data layer to use meaningful IDs, and object-oriented updates.
 	* [look here.](https://stackoverflow.com/questions/3585034/how-to-map-a-composite-key-with-hibernate)
-* Remove the confusion in the purpose of the cache. 
-	* Should we add methods for bare get/set of access tokens?
-	* Should we create an implementation of the cache that accepts an AccessToken cache?
-* Is anyone using the Success URL and Failure URL? Can we eliminate or combine them? Should we add a Declined URL?
-* Create a "liveness" call to ORCID
-	* context.checkOauthUrls
-	* context.checkPublicApi
-	* context.checkAuthorizedApi
-* Startup status
-	* Check SQL, Scholars, ORCID - messages for each
-	* Return 500 from filter
 * Rigorous checking on builders (most notably fuzzy date?) (required fields in Work?)
 * Specify either uri or (path && host) Check received data for details
 * Check that the user is who he says he is:
@@ -90,9 +97,9 @@
 		* If we turn down the noise, does it get quiet? LEVEL=Info, Warn?
 	* Refactor the test-webapp
 * Test the VIVO functionality: 
-* Doc
-	* Explain enough that one could write the VIVO functionality.
-	* Package this with JavaDocs, etc., for an artifact.
+	* Doc
+		* Explain enough that one could write the VIVO functionality.
+		* Package this with JavaDocs, etc., for an artifact.
 * Corner cases:
 	* Expired short-term token: WHAT happens?
 	* Revoked long-term token: WHAT happens?
@@ -127,12 +134,6 @@
 
 ## Remember document
 
-* REMEMBER: NOT TIED TO VIVO/SCHOLARS!!
-* Architecture
-	* Don’t have identifiers (DOI/ISBN) for each document that we push. 
- 		* Can we use Scholars URI as a persistent identifier?
-	* Is the approach of  “delete it all/push from scratch” practical?
- 		* If not, how do we deal with the fact that the Uber-record has changed for a particular document?
 * User experience:
 	* Give the user an empowering clue, like “push to ORCID”?
  		* That be the top-level button. Then the subsequent info gives more detail

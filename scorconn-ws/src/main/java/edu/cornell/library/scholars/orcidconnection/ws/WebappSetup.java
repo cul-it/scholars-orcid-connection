@@ -1,8 +1,5 @@
 package edu.cornell.library.scholars.orcidconnection.ws;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
@@ -10,11 +7,18 @@ import javax.servlet.annotation.WebListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import edu.cornell.library.orcidclient.actions.ApiScope;
+import edu.cornell.library.orcidclient.actions.OrcidActionClient;
+import edu.cornell.library.orcidclient.auth.AccessToken;
+import edu.cornell.library.orcidclient.auth.AccessTokenCache;
+import edu.cornell.library.orcidclient.auth.OauthProgress;
+import edu.cornell.library.orcidclient.auth.OauthProgressCache;
+import edu.cornell.library.orcidclient.auth.OrcidAuthorizationClient;
 import edu.cornell.library.orcidclient.context.OrcidClientContext;
 import edu.cornell.library.orcidclient.context.OrcidClientContextImpl;
-import edu.cornell.library.orcidclient.context.OrcidClientContextImpl.Setting;
 import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.orcidclient.http.BaseHttpWrapper;
+import edu.cornell.library.orcidclient.http.HttpWrapper;
 import edu.cornell.library.scholars.orcidconnection.data.DataLayer;
 import edu.cornell.library.scholars.orcidconnection.data.DataLayerException;
 import edu.cornell.library.scholars.orcidconnection.data.DataLayerImpl;
@@ -30,31 +34,13 @@ public class WebappSetup implements ServletContextListener {
     private static final Log log = LogFactory.getLog(WebappSetup.class);
 
     /**
-     * TODO BOGUS
+     * Load the startup parameters.
      * 
-     * <pre>
-     * Load the startup parameters
-     *    Look for a system property that points to a properties file, or
-     *    Look for a JNDI binding that points to a properties file
+     * Initialize the persistence cache, and test it.
      * 
-     * Test the database connection
-     *    Is this just a Hibernate call?
-     *    https://howtodoinjava.com/hibernate/hibernate-3-introduction-and-writing-hello-world-application/
-     *    https://examples.javacodegeeks.com/enterprise-java/hibernate/hibernate-maven-example/
-     *    http://hibernate.org/orm/documentation/5.3/
-     *    http://hibernate.org/orm/documentation/getting-started/
-     *    
-     *    How can we configure the SessionFactory from a resource in the webapp?
+     * Initialize the ORCID context and test the API connections.
      * 
-     * Test the ORCID connection
-     *    What can we test? Even if we try something that we know will fail, we can check
-     *      that it fails in the expected way.
-     *    This should be built into the driver 
-     * 
-     * Record all of this in the StartupStatus
-     * 
-     * Create the StartupStatusFilter that will do nothing if things are OK, return 500 otherwise, with informative text.
-     * </pre>
+     * Initialize the Scholars link and test it.
      */
 
     @Override
@@ -70,7 +56,8 @@ public class WebappSetup implements ServletContextListener {
         try {
             RuntimeProperties.initialize();
         } catch (RuntimePropertiesException e) {
-            StartupStatus.addError("Failed to initialize the runtime properties", e);
+            StartupStatus
+                    .addError("Failed to initialize the runtime properties", e);
         }
     }
 
@@ -82,30 +69,22 @@ public class WebappSetup implements ServletContextListener {
             StartupStatus.addError("Failed to initialize the data layer", e);
         }
     }
-    
+
     private void initializeOrcidContext() {
-        Map<Setting, String> settings = convertToSettings(
-                RuntimeProperties.getMap());
         try {
-            OrcidClientContext.initialize(new OrcidClientContextImpl(settings));
-            log.error("BOGUS -- TEST THE CONTEXT!!!");
-            log.info("Context is: " + OrcidClientContext.getInstance());
+            OrcidClientContext.initialize(
+                    new OrcidClientContextImpl(RuntimeProperties.getMap()));
+            OrcidClientContext occ = OrcidClientContext.getInstance();
+            log.info("Context is: " + occ);
+
+            HttpWrapper httpWrapper = new BaseHttpWrapper();
+            new OrcidAuthorizationClient(occ, new NullProgressCache(),
+                    new NullTokenCache(), httpWrapper).checkConnection();
+            new OrcidActionClient(occ, httpWrapper).checkConnection();
         } catch (OrcidClientException e) {
             StartupStatus.addError("Failed to initialize OrcidClientContent",
                     e);
         }
-    }
-
-    private Map<Setting, String> convertToSettings(
-            Map<String, String> strings) {
-        Map<Setting, String> settings = new HashMap<>();
-        for (Setting setting : Setting.values()) {
-            String string = setting.toString();
-            if (strings.containsKey(string)) {
-                settings.put(setting, strings.get(string));
-            }
-        }
-        return settings;
     }
 
     private void initializeScholarsLink() {
@@ -121,6 +100,44 @@ public class WebappSetup implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent arg0) {
         HibernateUtil.shutdown();
+    }
+
+    // ----------------------------------------------------------------------
+    // Helper classes
+    // ----------------------------------------------------------------------
+
+    private static class NullProgressCache implements OauthProgressCache {
+        @Override
+        public OauthProgress getByID(String arg0) throws OrcidClientException {
+            return null;
+        }
+
+        @Override
+        public OauthProgress getByScope(ApiScope scope)
+                throws OrcidClientException {
+            return null;
+        }
+
+        @Override
+        public void store(OauthProgress progress) throws OrcidClientException {
+            // Nothing to do.
+        }
+
+    }
+
+    private static class NullTokenCache implements AccessTokenCache {
+        @Override
+        public void addAccessToken(AccessToken token)
+                throws OrcidClientException {
+            // Nothing to do.
+        }
+
+        @Override
+        public AccessToken getToken(ApiScope scope)
+                throws OrcidClientException {
+            return null;
+        }
+
     }
 
 }

@@ -5,7 +5,6 @@ package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 import static edu.cornell.library.orcidclient.actions.ApiScope.ACTIVITIES_UPDATE;
 import static edu.cornell.library.orcidclient.auth.AccessToken.NO_TOKEN;
 import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.SERVLET_PROCESS_PUSH_REQUEST;
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getOrcidRecordPageUrl;
 
 import java.io.IOException;
@@ -22,13 +21,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.cornell.library.orcidclient.auth.AccessToken;
-import edu.cornell.library.orcidclient.auth.AuthorizationStateProgress;
-import edu.cornell.library.orcidclient.auth.OrcidAuthorizationClient;
-import edu.cornell.library.orcidclient.context.OrcidClientContext;
 import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
-import edu.cornell.library.orcidclient.http.BaseHttpWrapper;
 import edu.cornell.library.scholars.orcidconnection.PublicationsUpdateProcessor;
-import edu.cornell.library.scholars.orcidconnection.accesstokens.BogusCache;
 import edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 
@@ -54,46 +48,24 @@ public class ProcessPushRequestController extends HttpServlet
     }
 
     /** Thread-safe inner class */
-    private static class ServletCore {
-        private final HttpServletRequest req;
-        private final HttpServletResponse resp;
-        private final String localId;
-        private final OrcidClientContext occ;
-        private final BogusCache cache;
-        private final OrcidAuthorizationClient authClient;
-        private AuthorizationStateProgress progress;
+    private static class ServletCore extends AbstractServletCore {
         private AccessToken accessToken;
 
         public ServletCore(HttpServletRequest req, HttpServletResponse resp) {
-            this.req = req;
-            this.resp = resp;
-            this.localId = getLocalId(req);
-            this.occ = OrcidClientContext.getInstance();
-            this.cache = BogusCache.getCache(req, localId);
-            this.authClient = new OrcidAuthorizationClient(occ, cache,
-                    new BaseHttpWrapper());
+            super(req, resp);
         }
 
         private void doGet() throws IOException {
-            getAccessTokenFromCache();
-            if (!isAccessTokenPresent()) {
-                redirectIntoThreeLeggedOauthDance();
-            } else {
-                requestAsynchronousUpdate();
-                showAcknowledgementPage();
-            }
-        }
-
-        private void getAccessTokenFromCache() {
             try {
-                progress = cache.getByScope(ACTIVITIES_UPDATE);
-                if (progress == null) {
-                    accessToken = NO_TOKEN;
+                accessToken = getCachedAccessToken();
+                if (!isAccessTokenPresent()) {
+                    redirectIntoThreeLeggedOauthDance();
                 } else {
-                    accessToken = progress.getAccessToken();
+                    requestAsynchronousUpdate();
+                    showAcknowledgementPage();
                 }
             } catch (OrcidClientException e) {
-                throw new RuntimeException("Failed to read the cache.", e);
+                throw new RuntimeException(e);
             }
         }
 
@@ -106,7 +78,7 @@ public class ProcessPushRequestController extends HttpServlet
                 URI callback = new URI(occ.getCallbackUrl());
                 resp.sendRedirect(authClient.buildAuthorizationCall(
                         authClient.createProgressObject(ACTIVITIES_UPDATE,
-                                callback, callback)));
+                                callback, callback, callback)));
             } catch (URISyntaxException e) {
                 throw new RuntimeException(
                         "Orcid context returned an invalid callback URL", e);
@@ -124,7 +96,7 @@ public class ProcessPushRequestController extends HttpServlet
         private void showAcknowledgementPage() throws IOException {
             String orcid = accessToken.getOrcid();
             new PageRenderer(req, resp) //
-                    .setValue("localId", localId)
+                    .setValue("localId", localId) //
                     .setValue("orcidId", orcid)
                     .setValue("orcidIdUrl", getOrcidRecordPageUrl(orcid))
                     .render(TEMPLATE_ACKNOWLEDGE_PUSH_PROCESSING_PAGE);

@@ -4,13 +4,16 @@ package edu.cornell.library.scholars.orcidconnection.ws.utils;
 
 import javax.servlet.http.HttpServletRequest;
 
-import edu.cornell.library.orcidclient.auth.AuthorizationStateProgressCache;
+import edu.cornell.library.orcidclient.auth.AccessTokenCache;
+import edu.cornell.library.orcidclient.auth.OauthProgressCache;
+import edu.cornell.library.orcidclient.auth.OauthProgressCacheImpl;
 import edu.cornell.library.orcidclient.auth.OrcidAuthorizationClient;
 import edu.cornell.library.orcidclient.context.OrcidClientContext;
 import edu.cornell.library.orcidclient.http.BaseHttpWrapper;
+import edu.cornell.library.scholars.orcidconnection.accesstokens.AccessTokenCacheDataLayerImpl;
 
 /**
- * TODO
+ * Some methods that might come in handy for filters and servlets.
  */
 public class ServletUtils {
     private static final String ATTRIBUTE_COMPLETION_URL = ServletUtils.class
@@ -33,10 +36,14 @@ public class ServletUtils {
     }
 
     public static OrcidAuthorizationClient getAuthorizationClient(
-            AuthorizationStateProgressCache cache) {
+            HttpServletRequest req) {
         OrcidClientContext occ = OrcidClientContext.getInstance();
         BaseHttpWrapper httpWrapper = new BaseHttpWrapper();
-        return new OrcidAuthorizationClient(occ, cache, httpWrapper);
+        OauthProgressCache progressCache = OauthProgressCacheImpl.instance(req);
+        AccessTokenCache tokenCache = AccessTokenCacheDataLayerImpl
+                .instance(getLocalId(req));
+        return new OrcidAuthorizationClient(occ, progressCache, tokenCache,
+                httpWrapper);
     }
 
     public static String getOrcidRecordPageUrl(String orcidId) {

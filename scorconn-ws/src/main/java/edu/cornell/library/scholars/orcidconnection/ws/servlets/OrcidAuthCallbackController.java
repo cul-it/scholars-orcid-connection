@@ -17,18 +17,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import edu.cornell.library.orcidclient.auth.AuthorizationStateProgress;
-import edu.cornell.library.orcidclient.auth.AuthorizationStateProgress.State;
+import edu.cornell.library.orcidclient.auth.OauthProgress;
+import edu.cornell.library.orcidclient.auth.OauthProgress.State;
 import edu.cornell.library.orcidclient.auth.OrcidAuthorizationClient;
 import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.orcidclient.util.ParameterMap;
-import edu.cornell.library.scholars.orcidconnection.accesstokens.BogusCache;
 import edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 
 /**
- * TODO
- * 
  * If satisfactory, redirect to ProcessPushRequest If declined, show declined
  * page, with option to go to completion. Otherwise, show error page.
  */
@@ -43,16 +40,15 @@ public class OrcidAuthCallbackController extends HttpServlet
     public void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         try {
-            OrcidAuthorizationClient auth = getAuthorizationClient(
-                    BogusCache.getCache(req, getLocalId(req)));
+            OrcidAuthorizationClient auth = getAuthorizationClient(req);
             auth.processAuthorizationResponse(new ParameterMap(req));
 
-            AuthorizationStateProgress progress = auth
+            OauthProgress progress = auth
                     .getProgressById(req.getParameter("state"));
 
             if (progress.getState() == State.SUCCESS) {
-                log.info(String.format("User %s granted authorization: %s",
-                        getLocalId(req), progress.getAccessToken()));
+                log.info(String.format("User %s granted authorization.",
+                        getLocalId(req)));
                 RequestDispatcher dispatcher = req.getServletContext()
                         .getNamedDispatcher(SERVLET_PROCESS_PUSH_REQUEST);
                 dispatcher.forward(req, resp);

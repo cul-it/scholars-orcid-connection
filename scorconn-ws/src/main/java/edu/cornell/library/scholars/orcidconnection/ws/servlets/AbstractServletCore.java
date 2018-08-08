@@ -11,12 +11,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import edu.cornell.library.orcidclient.actions.OrcidActionClient;
 import edu.cornell.library.orcidclient.auth.AccessToken;
-import edu.cornell.library.orcidclient.auth.AuthorizationStateProgress;
+import edu.cornell.library.orcidclient.auth.AccessTokenCache;
+import edu.cornell.library.orcidclient.auth.OauthProgress;
+import edu.cornell.library.orcidclient.auth.OauthProgressCache;
+import edu.cornell.library.orcidclient.auth.OauthProgressCacheImpl;
 import edu.cornell.library.orcidclient.auth.OrcidAuthorizationClient;
 import edu.cornell.library.orcidclient.context.OrcidClientContext;
 import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.orcidclient.http.BaseHttpWrapper;
-import edu.cornell.library.scholars.orcidconnection.accesstokens.BogusCache;
+import edu.cornell.library.scholars.orcidconnection.accesstokens.AccessTokenCacheDataLayerImpl;
 
 /**
  * Variables and methods that will come in handy to the ServletCore instances.
@@ -25,7 +28,8 @@ public class AbstractServletCore {
     protected final HttpServletRequest req;
     protected final HttpServletResponse resp;
     protected final String localId;
-    protected final BogusCache cache;
+    protected final OauthProgressCache progressCache;
+    protected final AccessTokenCache tokenCache;
     protected final OrcidClientContext occ;
     protected final OrcidAuthorizationClient authClient;
     protected final OrcidActionClient actionClient;
@@ -35,28 +39,25 @@ public class AbstractServletCore {
         this.req = req;
         this.resp = resp;
         this.localId = getLocalId(req);
-        this.cache = BogusCache.getCache(req, localId);
+        this.progressCache = OauthProgressCacheImpl.instance(req);
+        this.tokenCache = AccessTokenCacheDataLayerImpl.instance(localId);
         this.occ = OrcidClientContext.getInstance();
-        this.authClient = new OrcidAuthorizationClient(occ, cache,
-                new BaseHttpWrapper());
+        this.authClient = new OrcidAuthorizationClient(occ, progressCache,
+                tokenCache, new BaseHttpWrapper());
         this.actionClient = new OrcidActionClient(occ, new BaseHttpWrapper());
     }
 
-    protected AuthorizationStateProgress getCachedProgress() {
+    protected OauthProgress getCachedProgress() {
         try {
-            return cache.getByScope(ACTIVITIES_UPDATE);
+            return progressCache.getByScope(ACTIVITIES_UPDATE);
         } catch (OrcidClientException e) {
             throw new RuntimeException("Failed to read the cache.", e);
         }
     }
 
-    protected AccessToken getCachedAccessToken() {
-        AuthorizationStateProgress progress = getCachedProgress();
-        if (progress == null) {
-            return NO_TOKEN;
-        } else {
-            return progress.getAccessToken();
-        }
+    protected AccessToken getCachedAccessToken() throws OrcidClientException {
+        AccessToken token = tokenCache.getToken(ACTIVITIES_UPDATE);
+        return (token == null) ? NO_TOKEN : token;
     }
 
 }
