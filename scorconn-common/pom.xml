@@ -23,7 +23,7 @@
 	<dependencies>
 		<!-- The new ORCID API client -->
 		<dependency>
-			<groupId>org.vivoweb</groupId>
+			<groupId>edu.cornell.library</groupId>
 			<artifactId>orcid-api-client</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>

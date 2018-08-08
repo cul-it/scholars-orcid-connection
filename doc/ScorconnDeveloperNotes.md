@@ -1,12 +1,35 @@
 # Developer Notes for the Scholars-ORCID Connection (SCORconn)
 
 ## Structure
-* __*TBD - REplace this diagram (OAuth not part of scorconn-cl)*__
-* Common, ORCID API Client, scorconn-ws, scorconn-cl
+* The product comprises of two distinct applications:
+	* `scorconn-ws` is an interactive web service. 
+		* Users to interact with ORCID, granting permission to add publications to their ORCID record.
+		* Users may initiate an asynchronous update of the publications on their ORCID record.
+	* `scorconn-cl` is a batch-oriented command-line application.
+		* The administrator may initiate asynchronous updates for the publications of one or more users.
+		* The users must have granted permission, via `scorconn-ws`.
+
+* Both applications interact with Scholars and with ORCID.
+	* If either Scholars or ORCID is offline, the application can't accomplish anything.
+
+* Package structure
+	* The applications share most of their code.
 	![component design](./ComponentDesign.png)
+	* They rely on the `orcid-api-client` code, which is available as a Maven artifact from CUL-IT:
+
+		```
+	      <dependency>
+	        <groupId>edu.cornell.library</groupId>
+	        <artifactId>orcid-api-client</artifactId>
+	        <version>1.0-SNAPSHOT</version>
+	      </dependency>
+		```
+		* This artifact includes both the API client and the OAuth client. 
+		This is why both are shown in the diagram, even though `scorconn-cl` doesn't use the OAuth client.
+	
 
 ## Hibernate for persistence
-* __*TBD*__
+* __*TBD*__ 
 
 ## Database design
 

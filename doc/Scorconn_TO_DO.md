@@ -22,6 +22,8 @@
 	* https://groups.google.com/forum/#!msg/orcid-api-users/U8YyD-Nn4rs/ikS_0Ui1BQAJ
 	* https://github.com/ORCID/orcid-conversion-lib
 	* https://github.com/ORCID/orcid-conversion-lib/tree/master/orcid-model
+* Readme.txt
+	* Make it clear that this does not build on the VIVO driver.
 
 ### SCORconn
 * Modify ProcessPushRequestController to provide more meaningful URL than the callback URL
