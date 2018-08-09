@@ -39,6 +39,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<!-- Run the application using "mvn jetty:run" -->
 			<plugin>
