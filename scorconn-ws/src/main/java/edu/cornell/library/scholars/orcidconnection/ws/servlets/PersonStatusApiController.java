@@ -100,7 +100,7 @@ public class PersonStatusApiController extends HttpServlet
         map.put("orcid_name", orcidName);
         map.put("orcid_page_url", orcidPageUrl);
         map.put("publications_pushed", count);
-        map.put("last_update", lastUpdated);
+        map.put("last_update", Long.toString(lastUpdated));
         return map;
     }
 }
