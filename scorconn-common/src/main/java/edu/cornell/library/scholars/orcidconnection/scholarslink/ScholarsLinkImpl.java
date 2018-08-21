@@ -16,7 +16,7 @@ import edu.cornell.library.orcidclient.http.HttpWrapper.HttpStatusCodeException;
 import edu.cornell.library.scholars.orcidconnection.publications.Publication;
 
 /**
- * TODO
+ * The obvious implementation of the ScholarsLink interface.
  */
 public class ScholarsLinkImpl extends ScholarsLink {
     private static final Log log = LogFactory.getLog(ScholarsLinkImpl.class);

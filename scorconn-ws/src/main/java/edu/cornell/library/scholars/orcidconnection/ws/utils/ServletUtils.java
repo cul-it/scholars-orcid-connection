@@ -16,8 +16,7 @@ import edu.cornell.library.scholars.orcidconnection.accesstokens.AccessTokenCach
  * Some methods that might come in handy for filters and servlets.
  */
 public class ServletUtils {
-    private static final String ATTRIBUTE_COMPLETION_URL = ServletUtils.class
-            .getName() + "CompletionUrl";
+    public static final String PROPERTY_SCHOLARS_BASE_URL = "scholarsBaseUrl";
 
     public static String getExternalAuthHeaderName() {
         return RuntimeProperties.getValue("externalAuth.headerName");
@@ -25,14 +24,6 @@ public class ServletUtils {
 
     public static String getLocalId(HttpServletRequest req) {
         return req.getHeader(getExternalAuthHeaderName());
-    }
-
-    public static void setCompletionUrl(HttpServletRequest req, String url) {
-        req.getSession().setAttribute(ATTRIBUTE_COMPLETION_URL, url);
-    }
-
-    public static String getCompletionUrl(HttpServletRequest req) {
-        return (String) req.getSession().getAttribute(ATTRIBUTE_COMPLETION_URL);
     }
 
     public static OrcidAuthorizationClient getAuthorizationClient(
@@ -48,6 +39,17 @@ public class ServletUtils {
 
     public static String getOrcidRecordPageUrl(String orcidId) {
         return OrcidClientContext.getInstance().getSiteBaseUrl() + orcidId;
+    }
+
+    public static String getReturnUrl(String localId) {
+        String url = RuntimeProperties.getValue(PROPERTY_SCHOLARS_BASE_URL);
+
+        if (!url.endsWith("/")) {
+            url += "/";
+        }
+        url += "display/" + localId;
+
+        return url;
     }
 
     private ServletUtils() {

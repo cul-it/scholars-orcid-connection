@@ -26,18 +26,34 @@
 	* Make it clear that this does not build on the VIVO driver.
 
 ### SCORconn
+
+#### Revised flow
+* Test the revised flow through all acceptance cases
+	* Revise the test cases as appropriate for the new flow
+	* Set the `feature/revised_flow` branch aside to work on Hibernate
+
+#### Configure Hibernate
+* Configure Hibernate from runtime.properties
+	* Give Greg the updated file
+	* Use the `feature/configure_hibernate` branch, but merge to `develop` before asking Greg to try it.
+	* Tell Greg that we need a `scorconn` database.
+
+#### Other
+* Developers Notes
 * Modify ProcessPushRequestController to provide more meaningful URL than the callback URL
 	* Would the callback controller be able to use those URLs
 * Change the flow:
-	* Button on the profile page, if service is up
-	* Page (through page management?)
-		* DataGetter
-		* Show current status
-		* Explain everything
-		* Provide a button.
-			* Different depending on status: schedule the update, or login to ORCID and ask permission
-			* Both require CUWebLogin
-	* At completion, link back to Scholars profile page.
+	* New flow:
+		* On landing, store return URL
+		* If no access token, start the dance.
+			* Else, store in session
+		* If access token has expired, show landingPageInvalidToken.twig.html
+		* On completion, show either "will be pushed" or "will be updated"
+
+	* Landing page takes us directly to ORCID
+		* Unless access token has expired, then to landingPageInvalidToken.twig.html
+	* Add return links to all pages -- return to Scholars@Cornell profile
+
 * Clean up the AuthToken testing
 	* PersonStatusApiController should look at the AccessToken date as well
 	as the Work dates
@@ -47,17 +63,12 @@
 	* Delete from Scholars -- push -- it is deleted from ORCID.
 * Add more to the DataDistributor
 * Improve Scholars adaptation:
-	* Add the configuring mechanism -- base URL of connection.
-	* Add the detection call
-		* Draw the tab hidden, until we know that the connection works
-		* If we have pushed already, show one thing
-		* If we have not, show the other.
-			* Make the link dynamic
+	* Add the configuring mechanism -- base URL of connection. -- PROPER EXAMPLE
 * Create the completion URL mechanism.
 	* If present on landing, record it in the session
 	* If present on terminal pages, offer as a link
 * Should ServletUtils disappear in favor of AbstractServletCore?
-* OrcidAuthorizationClient.checkConnection() should become static
+* OrcidAuthorizationClient.checkConnection() should become static?
 	* If we don't need to instantiate, we don't need any caches -- WebappSetup
 
 ## Dealing with errors - A big question

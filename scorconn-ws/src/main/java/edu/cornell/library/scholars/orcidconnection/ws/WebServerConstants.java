@@ -12,6 +12,7 @@ public interface WebServerConstants {
     static final String SERVLET_FAKE_LOGIN_PAGE = "FakeLoginPage";
     static final String SERVLET_STARTUP_STATUS_PAGE = "StartupStatusPage";
     static final String SERVLET_PROCESS_PUSH_REQUEST = "ProcessPushRequest";
+    static final String SERVLET_ACKNOWLEDGE = "Acknowledge";
 
     static final String TEMPLATE_FAKE_LOGIN_PAGE = "/templates/fakeLoginPage.twig.html";
     static final String TEMPLATE_LANDING_WITHOUT_TOKEN_PAGE = "/templates/landingPageNoToken.twig.html";
@@ -19,7 +20,8 @@ public interface WebServerConstants {
     static final String TEMPLATE_LANDING_INVALID_TOKEN_PAGE = "/templates/landingPageInvalidToken.twig.html";
     static final String TEMPLATE_ERROR_PAGE = "/templates/errorPage.twig.html";
     static final String TEMPLATE_USER_DENIED_ACCESS_PAGE = "/templates/userDeniedAccessPage.twig.html";
-    static final String TEMPLATE_ACKNOWLEDGE_PUSH_PROCESSING_PAGE = "/templates/acknowledgePushProcessingPage.twig.html";
+    static final String TEMPLATE_ACKNOWLEDGE_FIRST_TIME_PAGE = "/templates/acknowledgePushProcessingPage.twig.html";
+    static final String TEMPLATE_ACKNOWLEDGE_UPDATE_PAGE = "/templates/acknowledgeUpdatePage.twig.html";
     static final String TEMPLATE_STARTUP_STATUS_PAGE = "/templates/startupStatusPage.twig.html";
 
 }

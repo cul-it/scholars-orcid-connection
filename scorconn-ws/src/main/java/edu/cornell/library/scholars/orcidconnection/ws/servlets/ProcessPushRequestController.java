@@ -5,7 +5,6 @@ package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 import static edu.cornell.library.orcidclient.actions.ApiScope.ACTIVITIES_UPDATE;
 import static edu.cornell.library.orcidclient.auth.AccessToken.NO_TOKEN;
 import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.SERVLET_PROCESS_PUSH_REQUEST;
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getOrcidRecordPageUrl;
 
 import java.io.IOException;
 import java.net.URI;
@@ -24,7 +23,6 @@ import edu.cornell.library.orcidclient.auth.AccessToken;
 import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.scholars.orcidconnection.PublicationsUpdateProcessor;
 import edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants;
-import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 
 /**
  * The user has said that they are ready to push the publications.
@@ -62,7 +60,7 @@ public class ProcessPushRequestController extends HttpServlet
                     redirectIntoThreeLeggedOauthDance();
                 } else {
                     requestAsynchronousUpdate();
-                    showAcknowledgementPage();
+                    redirectToAcknowledgementPage();
                 }
             } catch (OrcidClientException e) {
                 throw new RuntimeException(e);
@@ -93,13 +91,14 @@ public class ProcessPushRequestController extends HttpServlet
             new PublicationsUpdateProcessor(localId, accessToken).start();
         }
 
-        private void showAcknowledgementPage() throws IOException {
-            String orcid = accessToken.getOrcid();
-            new PageRenderer(req, resp) //
-                    .setValue("localId", localId) //
-                    .setValue("orcidId", orcid)
-                    .setValue("orcidIdUrl", getOrcidRecordPageUrl(orcid))
-                    .render(TEMPLATE_ACKNOWLEDGE_PUSH_PROCESSING_PAGE);
+        private void redirectToAcknowledgementPage() throws IOException {
+            try {
+                resp.sendRedirect(occ.resolvePathWithWebapp(SERVLET_ACKNOWLEDGE)
+                        .toString());
+            } catch (URISyntaxException e) {
+                throw new RuntimeException("ORCID context failed to resolve",
+                        e);
+            }
         }
     }
 }

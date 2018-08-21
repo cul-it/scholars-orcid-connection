@@ -4,7 +4,6 @@ package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
 import static edu.cornell.library.orcidclient.auth.AccessToken.NO_TOKEN;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getOrcidRecordPageUrl;
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.setCompletionUrl;
 
 import java.io.IOException;
 
@@ -13,8 +12,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang3.StringUtils;
 
 import edu.cornell.library.orcidclient.auth.AccessToken;
 import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
@@ -30,8 +27,7 @@ import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 @WebServlet("/LandingPage")
 public class LandingPageController extends HttpServlet
         implements WebServerConstants {
-
-    private static final String PARAMETER_COMPLETION_URL = "completionUrl";
+    public static final String SESSION_KEY_FIRST_TIME = "firstTimeAccess";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -51,30 +47,22 @@ public class LandingPageController extends HttpServlet
             super(req, resp);
         }
 
-        public void doGet() {
+        public void doGet() throws IOException, ServletException {
             try {
-                storeCompletionUrlIfPresent();
-
                 switch (checkAccessTokenStatus()) {
                 case VALID:
-                    showValidTokenPage();
+                    goDirectlyToPushRequest();
                     break;
                 case INVALID:
                     showInvalidTokenPage();
                     break;
                 default: // NONE
-                    showNoTokenPage();
+                    storeFirstTimeFlag();
+                    goDirectlyToPushRequest();
                     break;
                 }
-            } catch (OrcidClientException | IOException e) {
+            } catch (OrcidClientException e) {
                 throw new RuntimeException(e);
-            }
-        }
-
-        private void storeCompletionUrlIfPresent() {
-            String completionUrl = req.getParameter(PARAMETER_COMPLETION_URL);
-            if (StringUtils.isNotEmpty(completionUrl)) {
-                setCompletionUrl(req, completionUrl);
             }
         }
 
@@ -90,11 +78,11 @@ public class LandingPageController extends HttpServlet
             }
         }
 
-        private void showNoTokenPage() throws IOException {
-            new PageRenderer(req, resp) //
-                    .setValue("localId", localId)
-                    .setValue("formActionUrl", SERVLET_PROCESS_PUSH_REQUEST)
-                    .render(TEMPLATE_LANDING_WITHOUT_TOKEN_PAGE);
+        private void goDirectlyToPushRequest()
+                throws IOException, ServletException {
+            req.getServletContext()
+                    .getNamedDispatcher(SERVLET_PROCESS_PUSH_REQUEST)
+                    .forward(req, resp);
         }
 
         private void showInvalidTokenPage() throws IOException {
@@ -107,14 +95,8 @@ public class LandingPageController extends HttpServlet
                     .render(TEMPLATE_LANDING_INVALID_TOKEN_PAGE);
         }
 
-        private void showValidTokenPage() throws IOException {
-            String orcid = accessToken.getOrcid();
-            new PageRenderer(req, resp) //
-                    .setValue("localId", localId)
-                    .setValue("formActionUrl", SERVLET_PROCESS_PUSH_REQUEST)
-                    .setValue("orcidId", orcid)
-                    .setValue("orcidIdUrl", getOrcidRecordPageUrl(orcid))
-                    .render(TEMPLATE_LANDING_WITH_TOKEN_PAGE);
+        private void storeFirstTimeFlag() {
+            req.getSession().setAttribute(SESSION_KEY_FIRST_TIME, true);
         }
     }
 }
