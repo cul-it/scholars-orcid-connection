@@ -3,8 +3,9 @@
 package edu.cornell.library.scholars.orcidconnection.data;
 
 import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Category.ADD;
-import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Table.TOKEN;
+import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Category.DELETE;
 import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Table.PERSON;
+import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Table.TOKEN;
 import static edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry.Table.WORK;
 
 import java.util.List;
@@ -15,15 +16,15 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 
-import edu.cornell.library.scholars.orcidconnection.data.mapping.Token;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.LogEntry;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Person;
+import edu.cornell.library.scholars.orcidconnection.data.mapping.Token;
 import edu.cornell.library.scholars.orcidconnection.data.mapping.Work;
 
 /**
  * Methods that wrap all interaction with the persistence layer.
  * 
- * TODO -- write to LogEntry.
+ * Every add or delete includes a log entry. Finds do not.
  */
 public class DataLayerImpl extends DataLayer {
 
@@ -36,12 +37,9 @@ public class DataLayerImpl extends DataLayer {
 
     @Override
     public void writeAccessToken(Token accessToken) throws DataLayerException {
-        deleteThese(findAccessTokens(accessToken.getOrcidId(),
+        deleteThese(TOKEN, findAccessTokens(accessToken.getOrcidId(),
                 accessToken.getScope()));
-        writeToDatabase(s -> {
-            s.save(accessToken);
-        });
-        writeLogEntry(new LogEntry(TOKEN, ADD, accessToken.toString()));
+        addThis(TOKEN, accessToken);
     }
 
     @Override
@@ -62,12 +60,15 @@ public class DataLayerImpl extends DataLayer {
     }
 
     @Override
+    public void deleteAccessToken(Token accessToken) throws DataLayerException {
+        deleteThese(TOKEN, findAccessTokens(accessToken.getOrcidId(),
+                accessToken.getScope()));
+    }
+
+    @Override
     public void writePerson(Person person) throws DataLayerException {
-        deleteThese(findPersons(person.getLocalId()));
-        writeToDatabase(s -> {
-            s.save(person);
-        });
-        writeLogEntry(new LogEntry(PERSON, ADD, person.toString()));
+        deleteThese(PERSON, findPersons(person.getLocalId()));
+        addThis(PERSON, person);
     }
 
     @Override
@@ -86,11 +87,8 @@ public class DataLayerImpl extends DataLayer {
 
     @Override
     public void writeWork(Work work) throws DataLayerException {
-        deleteThese(findWorks(work.getScholarsUri(), work.getOrcidId()));
-        writeToDatabase(s -> {
-            s.save(work);
-        });
-        writeLogEntry(new LogEntry(WORK, ADD, work.toString()));
+        deleteThese(WORK, findWorks(work.getScholarsUri(), work.getOrcidId()));
+        addThis(WORK, work);
     }
 
     @Override
@@ -123,7 +121,7 @@ public class DataLayerImpl extends DataLayer {
     @Override
     public void deleteWork(String scholarsUri, String orcidId)
             throws DataLayerException {
-        deleteThese(findWorks(scholarsUri, orcidId));
+        deleteThese(WORK, findWorks(scholarsUri, orcidId));
     }
 
     @Override
@@ -174,10 +172,20 @@ public class DataLayerImpl extends DataLayer {
         }
     }
 
-    private void deleteThese(List<?> things) throws DataLayerException {
+    private void addThis(LogEntry.Table table, Object thing)
+            throws DataLayerException {
+        writeToDatabase(s -> {
+            s.save(thing);
+            writeLogEntry(new LogEntry(table, ADD, thing.toString()));
+        });
+    }
+
+    private void deleteThese(LogEntry.Table table, List<?> things)
+            throws DataLayerException {
         writeToDatabase(s -> {
             for (Object thing : things) {
                 s.remove(thing);
+                writeLogEntry(new LogEntry(table, DELETE, thing.toString()));
             }
         });
     }
@@ -195,7 +203,8 @@ public class DataLayerImpl extends DataLayer {
     // ----------------------------------------------------------------------
 
     interface HibernateWriter {
-        void operate(Session session) throws HibernateException;
+        void operate(Session session)
+                throws HibernateException, DataLayerException;
     }
 
     interface QueryBuilder<T> {

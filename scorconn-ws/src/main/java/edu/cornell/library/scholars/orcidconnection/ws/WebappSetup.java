@@ -138,6 +138,11 @@ public class WebappSetup implements ServletContextListener {
             return null;
         }
 
+        @Override
+        public void removeAccessToken(AccessToken token)
+                throws OrcidClientException {
+            // Nothing to do.
+        }
     }
 
 }

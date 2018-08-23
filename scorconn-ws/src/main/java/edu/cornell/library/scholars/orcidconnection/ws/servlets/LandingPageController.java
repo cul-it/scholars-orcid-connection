@@ -54,6 +54,7 @@ public class LandingPageController extends HttpServlet
                     goDirectlyToPushRequest();
                     break;
                 case INVALID:
+                    removeInvalidToken();
                     showInvalidTokenPage();
                     break;
                 default: // NONE
@@ -76,6 +77,10 @@ public class LandingPageController extends HttpServlet
             } else {
                 return TokenStatus.INVALID;
             }
+        }
+
+        private void removeInvalidToken() throws OrcidClientException {
+            tokenCache.removeAccessToken(accessToken);
         }
 
         private void goDirectlyToPushRequest()

@@ -72,4 +72,16 @@ public class AccessTokenCacheDataLayerImpl implements AccessTokenCache {
         }
     }
 
+    @Override
+    public void removeAccessToken(AccessToken token)
+            throws OrcidClientException {
+        try {
+            Token t = DataLayer.instance().findAccessToken(token.getOrcid(),
+                    token.getScope().getScope());
+            DataLayer.instance().deleteAccessToken(t);
+        } catch (DataLayerException e) {
+            throw new OrcidClientException(
+                    "Failed to remove the access token: " + token, e);
+        }
+    }
 }

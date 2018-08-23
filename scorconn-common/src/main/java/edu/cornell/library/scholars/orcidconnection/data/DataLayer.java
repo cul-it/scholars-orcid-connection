@@ -49,6 +49,9 @@ public abstract class DataLayer {
     public abstract Token findAccessToken(String localId, String scope)
             throws DataLayerException;
 
+    public abstract void deleteAccessToken(Token accessToken)
+            throws DataLayerException;
+
     public abstract void writePerson(Person person) throws DataLayerException;
 
     public abstract Person findPerson(String localId) throws DataLayerException;
@@ -86,6 +89,12 @@ public abstract class DataLayer {
 
         @Override
         public Token findAccessToken(String localId, String scope) {
+            throw new IllegalStateException(MESSAGE);
+        }
+
+        @Override
+        public void deleteAccessToken(Token accessToken)
+                throws DataLayerException {
             throw new IllegalStateException(MESSAGE);
         }
 
