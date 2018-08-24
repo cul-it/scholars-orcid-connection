@@ -9,9 +9,11 @@
 	  <div id="nav-bar">
         <div id="nav-bar-row">
 	      <span id="nav-logo">
-            <span>
-              <img src="images/menu_logo.png" />
-            </span>
+	        <a href="{{scholarsLink}}">
+              <span>
+                <img src="images/menu_logo.png" />
+              </span>
+	        </a>
 	      </span>
         </div>
 	  </div>
@@ -21,12 +23,22 @@
 		<h1>{{title}}</h1>
 
 		<div class="scholars-container">
-			<div class="inside-container">
-				{% block body %}
-				<h1>SPECIFY A BODY BLOCK</h1>
-				{% endblock body %}
-			</div>
+          <div class="inside-container">
+            {% block body %}
+            <h1>SPECIFY A BODY BLOCK</h1>
+            {% endblock body %}
+          </div>
 		</div>
+	
+      <div class="footer">
+        {% block exitLink %}
+        <div id="exitLink">
+          <a class="scholars-btn-link" href="{{exitLink}}">Return to profile page</a>
+        </div>
+        {% endblock exitLink %}
+	  </div>
+	
 	</div>
+	
 </body>
 </html>

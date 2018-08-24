@@ -5,7 +5,6 @@ package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.SERVLET_ACKNOWLEDGE;
 import static edu.cornell.library.scholars.orcidconnection.ws.servlets.LandingPageController.SESSION_KEY_FIRST_TIME;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getOrcidRecordPageUrl;
-import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getReturnUrl;
 
 import java.io.IOException;
 
@@ -54,7 +53,6 @@ public class AcknowledgePageController extends HttpServlet
                         .setValue("localId", localId) //
                         .setValue("orcidId", orcid)
                         .setValue("orcidIdUrl", getOrcidRecordPageUrl(orcid))
-                        .setValue("returnUrl", getReturnUrl(localId))
                         .render(TEMPLATE_ACKNOWLEDGE_FIRST_TIME_PAGE);
             } catch (OrcidClientException | IOException e) {
                 throw new RuntimeException(e);
@@ -68,7 +66,6 @@ public class AcknowledgePageController extends HttpServlet
                         .setValue("localId", localId) //
                         .setValue("orcidId", orcid)
                         .setValue("orcidIdUrl", getOrcidRecordPageUrl(orcid))
-                        .setValue("returnUrl", getReturnUrl(localId))
                         .render(TEMPLATE_ACKNOWLEDGE_UPDATE_PAGE);
             } catch (OrcidClientException | IOException e) {
                 throw new RuntimeException(e);

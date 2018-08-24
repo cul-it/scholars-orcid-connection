@@ -21,8 +21,6 @@ import edu.cornell.library.scholars.orcidconnection.publications.Publication;
 public class ScholarsLinkImpl extends ScholarsLink {
     private static final Log log = LogFactory.getLog(ScholarsLinkImpl.class);
 
-    public static final String PROPERTY_SCHOLARS_BASE_URL = "scholarsBaseUrl";
-
     private final Map<String, String> properties;
     private final HttpWrapper httpWrapper;
 

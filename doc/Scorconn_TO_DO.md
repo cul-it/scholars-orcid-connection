@@ -27,11 +27,6 @@
 
 ### SCORconn
 
-#### Revised flow
-* Test the revised flow through all acceptance cases
-	* Revise the test cases as appropriate for the new flow
-	* Set the `feature/revised_flow` branch aside to work on Hibernate
-
 #### Configure Hibernate
 * Configure Hibernate from runtime.properties
 	* Give Greg the updated file
@@ -39,6 +34,9 @@
 	* Tell Greg that we need a `scorconn` database.
 
 #### Other
+* OauthCallbackController should redirect to status screens, not render them itself.
+	* Who else does this apply to? 
+	* Should we have a framework?
 * Developers Notes
 * Modify ProcessPushRequestController to provide more meaningful URL than the callback URL
 	* Would the callback controller be able to use those URLs

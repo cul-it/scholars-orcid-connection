@@ -15,6 +15,8 @@ import edu.cornell.library.scholars.orcidconnection.publications.Publication;
 public abstract class ScholarsLink {
     private static final Log log = LogFactory.getLog(ScholarsLink.class);
 
+    public static final String PROPERTY_SCHOLARS_BASE_URL = "scholarsBaseUrl";
+
     // ----------------------------------------------------------------------
     // The factory
     // ----------------------------------------------------------------------

@@ -2,6 +2,9 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.utils;
 
+import static edu.cornell.library.scholars.orcidconnection.scholarslink.ScholarsLink.PROPERTY_SCHOLARS_BASE_URL;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getExitUrl;
+import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
 import static org.jtwig.JtwigTemplate.classpathTemplate;
 
 import java.io.IOException;
@@ -16,7 +19,11 @@ import org.jtwig.environment.EnvironmentConfiguration;
 import org.jtwig.environment.EnvironmentConfigurationBuilder;
 
 /**
- * TODO
+ * Render a given template, using optional key/value pairs and an optional
+ * status code (defaults to 200).
+ * 
+ * Also make these values available to the template: a link to the main page of
+ * scholars, and a link to the profile page that we started from.
  */
 public class PageRenderer {
     private static final EnvironmentConfiguration env = EnvironmentConfigurationBuilder
@@ -39,18 +46,24 @@ public class PageRenderer {
         this.statusCode = code;
         return this;
     }
-    
+
     public PageRenderer setValue(String key, Object value) {
         this.values.put(key, value);
         return this;
     }
 
     public void render(String templatePath) throws IOException {
+        String scholarsLink = RuntimeProperties
+                .getValue(PROPERTY_SCHOLARS_BASE_URL);
+        String exitLink = getExitUrl(getLocalId(req));
+
         resp.setContentType(contentType);
         resp.setCharacterEncoding(charset);
         resp.setStatus(statusCode);
 
-        JtwigModel model = JtwigModel.newModel();
+        JtwigModel model = JtwigModel.newModel() //
+                .with("scholarsLink", scholarsLink) //
+                .with("exitLink", exitLink);
         for (String key : values.keySet()) {
             model.with(key, values.get(key));
         }

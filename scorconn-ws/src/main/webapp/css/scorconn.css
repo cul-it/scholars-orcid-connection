@@ -91,3 +91,7 @@ body {
     color: #fff  !important;
     text-decoration: none !important;
 }
+
+.footer {
+  clear: both;
+}

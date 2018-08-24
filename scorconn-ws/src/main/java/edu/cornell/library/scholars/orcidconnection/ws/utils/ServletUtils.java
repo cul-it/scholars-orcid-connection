@@ -2,6 +2,8 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.utils;
 
+import static edu.cornell.library.scholars.orcidconnection.scholarslink.ScholarsLink.PROPERTY_SCHOLARS_BASE_URL;
+
 import javax.servlet.http.HttpServletRequest;
 
 import edu.cornell.library.orcidclient.auth.AccessTokenCache;
@@ -16,7 +18,6 @@ import edu.cornell.library.scholars.orcidconnection.accesstokens.AccessTokenCach
  * Some methods that might come in handy for filters and servlets.
  */
 public class ServletUtils {
-    public static final String PROPERTY_SCHOLARS_BASE_URL = "scholarsBaseUrl";
 
     public static String getExternalAuthHeaderName() {
         return RuntimeProperties.getValue("externalAuth.headerName");
@@ -41,15 +42,16 @@ public class ServletUtils {
         return OrcidClientContext.getInstance().getSiteBaseUrl() + orcidId;
     }
 
-    public static String getReturnUrl(String localId) {
-        String url = RuntimeProperties.getValue(PROPERTY_SCHOLARS_BASE_URL);
+    public static String getExitUrl(String localId) {
+        if (localId == null) {
+            return null;
+        }
 
+        String url = RuntimeProperties.getValue(PROPERTY_SCHOLARS_BASE_URL);
         if (!url.endsWith("/")) {
             url += "/";
         }
-        url += "display/" + localId;
-
-        return url;
+        return url + "display/" + localId;
     }
 
     private ServletUtils() {
