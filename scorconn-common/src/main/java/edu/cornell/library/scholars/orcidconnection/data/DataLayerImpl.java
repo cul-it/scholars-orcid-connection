@@ -136,7 +136,7 @@ public class DataLayerImpl extends DataLayer {
     // ----------------------------------------------------------------------
 
     private void writeToDatabase(HibernateWriter hw) throws DataLayerException {
-        SessionFactory factory = HibernateUtil.getSessionFactory();
+        SessionFactory factory = HibernateSessionFactory.getSessionFactory();
         Transaction tx = null;
 
         try (Session session = factory.openSession()) {
@@ -154,7 +154,7 @@ public class DataLayerImpl extends DataLayer {
 
     private <T> List<T> readFromDatabase(QueryBuilder<T> qb)
             throws DataLayerException {
-        SessionFactory factory = HibernateUtil.getSessionFactory();
+        SessionFactory factory = HibernateSessionFactory.getSessionFactory();
         Transaction tx = null;
 
         try (Session session = factory.openSession()) {

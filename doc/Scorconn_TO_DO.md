@@ -37,6 +37,8 @@
 * OauthCallbackController should redirect to status screens, not render them itself.
 	* Who else does this apply to? 
 	* Should we have a framework?
+* Use the C3PO connection pool for Hibernate
+	* https://www.mchange.com/projects/c3p0/#hibernate-specific
 * Developers Notes
 * Modify ProcessPushRequestController to provide more meaningful URL than the callback URL
 	* Would the callback controller be able to use those URLs

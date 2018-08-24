@@ -5,10 +5,6 @@
 <hibernate-configuration>
 	<session-factory>
 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-		<property name="hibernate.connection.url">jdbc:mysql://localhost/scorconn?useSSL=false</property>
-		<property name="hibernate.connection.password">scholarsPass</property>
-		<property name="hibernate.connection.username">scholarsUser</property>
-		<property name="show_sql">true</property>
 		<property name="hbm2ddl.auto">update</property>
 		<mapping
 			class="edu.cornell.library.scholars.orcidconnection.data.mapping.Person"></mapping>

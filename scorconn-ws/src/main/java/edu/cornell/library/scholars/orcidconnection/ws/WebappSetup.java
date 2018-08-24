@@ -20,9 +20,9 @@ import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.orcidclient.http.BaseHttpWrapper;
 import edu.cornell.library.orcidclient.http.HttpWrapper;
 import edu.cornell.library.scholars.orcidconnection.data.DataLayer;
-import edu.cornell.library.scholars.orcidconnection.data.DataLayerException;
 import edu.cornell.library.scholars.orcidconnection.data.DataLayerImpl;
-import edu.cornell.library.scholars.orcidconnection.data.HibernateUtil;
+import edu.cornell.library.scholars.orcidconnection.data.HibernateSessionFactory;
+import edu.cornell.library.scholars.orcidconnection.data.HibernateSessionFactoryImpl;
 import edu.cornell.library.scholars.orcidconnection.scholarslink.ScholarsLink;
 import edu.cornell.library.scholars.orcidconnection.scholarslink.ScholarsLinkImpl;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.RuntimeProperties;
@@ -44,7 +44,7 @@ public class WebappSetup implements ServletContextListener {
      */
 
     @Override
-    public void contextInitialized(ServletContextEvent arg0) {
+    public void contextInitialized(ServletContextEvent sce) {
         initializeRuntimeProperties();
         initializePersistenceCache();
         initializeOrcidContext();
@@ -63,9 +63,12 @@ public class WebappSetup implements ServletContextListener {
 
     private void initializePersistenceCache() {
         try {
+            HibernateSessionFactory.initialize(new HibernateSessionFactoryImpl(
+                    RuntimeProperties.getMap()));
+
             DataLayer.initialize(new DataLayerImpl());
             DataLayer.instance().checkConnection();
-        } catch (DataLayerException e) {
+        } catch (Exception e) {
             StartupStatus.addError("Failed to initialize the data layer", e);
         }
     }
@@ -98,8 +101,8 @@ public class WebappSetup implements ServletContextListener {
     }
 
     @Override
-    public void contextDestroyed(ServletContextEvent arg0) {
-        HibernateUtil.shutdown();
+    public void contextDestroyed(ServletContextEvent sce) {
+        HibernateSessionFactory.shutdown();
     }
 
     // ----------------------------------------------------------------------
