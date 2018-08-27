@@ -4,7 +4,13 @@ package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
 import static edu.cornell.library.orcidclient.actions.ApiScope.ACTIVITIES_UPDATE;
 import static edu.cornell.library.orcidclient.auth.AccessToken.NO_TOKEN;
+import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.ATTRIBUTE_ERROR_MESSAGE;
+import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.SERVLET_SHOW_ERROR;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,6 +64,21 @@ public class AbstractServletCore {
     protected AccessToken getCachedAccessToken() throws OrcidClientException {
         AccessToken token = tokenCache.getToken(ACTIVITIES_UPDATE);
         return (token == null) ? NO_TOKEN : token;
+    }
+
+    protected void redirectToController(String controllerPath)
+            throws IOException {
+        try {
+            URI controllerUri = occ.resolvePathWithWebapp(controllerPath);
+            resp.sendRedirect(controllerUri.toString());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException("ORCID context failed to resolve", e);
+        }
+    }
+
+    protected void redirectToErrorPage(String message) throws IOException {
+        req.getSession().setAttribute(ATTRIBUTE_ERROR_MESSAGE, message);
+        redirectToController(SERVLET_SHOW_ERROR);
     }
 
 }

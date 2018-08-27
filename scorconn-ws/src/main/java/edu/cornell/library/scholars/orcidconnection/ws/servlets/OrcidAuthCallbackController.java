@@ -2,6 +2,7 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
+import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.SERVLET_CALLBACK;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getAuthorizationClient;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getLocalId;
 
@@ -23,13 +24,12 @@ import edu.cornell.library.orcidclient.auth.OrcidAuthorizationClient;
 import edu.cornell.library.orcidclient.exceptions.OrcidClientException;
 import edu.cornell.library.orcidclient.util.ParameterMap;
 import edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants;
-import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
 
 /**
  * If satisfactory, redirect to ProcessPushRequest If declined, show declined
  * page, with option to go to completion. Otherwise, show error page.
  */
-@WebServlet(urlPatterns = "/OrcidCallback")
+@WebServlet(name = SERVLET_CALLBACK, urlPatterns = "/" + SERVLET_CALLBACK)
 public class OrcidAuthCallbackController extends HttpServlet
         implements WebServerConstants {
     public static final String ATTRIBUTE_BOGUS_CACHE = "BogusCache";
@@ -37,34 +37,42 @@ public class OrcidAuthCallbackController extends HttpServlet
             .getLog(OrcidAuthCallbackController.class);
 
     @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse resp)
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        try {
-            OrcidAuthorizationClient auth = getAuthorizationClient(req);
-            auth.processAuthorizationResponse(new ParameterMap(req));
+        new ServletCore(req, resp).doGet();
+    }
 
-            OauthProgress progress = auth
-                    .getProgressById(req.getParameter("state"));
+    /** Thread-safe inner class. */
+    private static class ServletCore extends AbstractServletCore {
+        public ServletCore(HttpServletRequest req, HttpServletResponse resp) {
+            super(req, resp);
+        }
 
-            if (progress.getState() == State.SUCCESS) {
-                log.info(String.format("User %s granted authorization.",
-                        getLocalId(req)));
-                RequestDispatcher dispatcher = req.getServletContext()
-                        .getNamedDispatcher(SERVLET_PROCESS_PUSH_REQUEST);
-                dispatcher.forward(req, resp);
-            } else if (progress.getState() == State.DENIED) {
-                log.info("User " + getLocalId(req) + " denied authorization.");
-                new PageRenderer(req, resp) //
-                        .render(TEMPLATE_USER_DENIED_ACCESS_PAGE);
-            } else {
-                log.error("OAuth dance failed. Progress is: " + progress);
-                new PageRenderer(req, resp) //
-                        .setValue("message",
-                                "ORCID Authentication process failed.")
-                        .render(TEMPLATE_ERROR_PAGE);
+        public void doGet() throws IOException, ServletException {
+            try {
+                OrcidAuthorizationClient auth = getAuthorizationClient(req);
+                auth.processAuthorizationResponse(new ParameterMap(req));
+
+                OauthProgress progress = auth
+                        .getProgressById(req.getParameter("state"));
+
+                if (progress.getState() == State.SUCCESS) {
+                    log.info(String.format("User %s granted authorization.",
+                            getLocalId(req)));
+                    RequestDispatcher dispatcher = req.getServletContext()
+                            .getNamedDispatcher(SERVLET_PUSH_PUBS);
+                    dispatcher.forward(req, resp);
+                } else if (progress.getState() == State.DENIED) {
+                    log.info("User " + getLocalId(req)
+                            + " denied authorization.");
+                    redirectToController(SERVLET_USER_DENIED);
+                } else {
+                    log.error("OAuth dance failed. Progress is: " + progress);
+                    redirectToErrorPage("ORCID Authentication process failed.");
+                }
+            } catch (OrcidClientException e) {
+                throw new ServletException(e);
             }
-        } catch (OrcidClientException e) {
-            throw new ServletException(e);
         }
     }
 }

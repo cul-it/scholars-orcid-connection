@@ -57,9 +57,6 @@ public class CheckAuthFilter implements Filter, WebServerConstants {
 
     public static final String ATTRIBUTE_FAKE_NETID = CheckAuthFilter.class
             .getName() + "FakeNetid";
-    public static final String ATTRIBUTE_ERROR_MESSAGE = CheckAuthFilter.class
-            .getName() + "ErrorMessage";
-
     public static final Pattern[] UNRESTRICTED_URLS = new Pattern[] {
             Pattern.compile(".*\\.png$", CASE_INSENSITIVE),
             Pattern.compile(".*\\.css$", CASE_INSENSITIVE),
@@ -161,7 +158,7 @@ public class CheckAuthFilter implements Filter, WebServerConstants {
         private void showFakeLoginPage() throws ServletException, IOException {
             log.debug("show fake login page");
             RequestDispatcher dispatcher = req.getServletContext()
-                    .getNamedDispatcher(SERVLET_FAKE_LOGIN_PAGE);
+                    .getNamedDispatcher(SERVLET_FAKE_LOGIN);
             dispatcher.forward(req, resp);
         }
 

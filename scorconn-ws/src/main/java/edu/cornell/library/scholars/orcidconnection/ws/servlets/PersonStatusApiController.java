@@ -2,6 +2,7 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
+import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.SERVLET_PERSON_API;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getOrcidRecordPageUrl;
 
 import java.io.IOException;
@@ -32,7 +33,7 @@ import edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants;
  * Respond to a request for status. Tell whether we have heard of the person,
  * and if so what we have done for him.
  */
-@WebServlet("/personStatus")
+@WebServlet(name = SERVLET_PERSON_API, urlPatterns = "/" + SERVLET_PERSON_API)
 public class PersonStatusApiController extends HttpServlet
         implements WebServerConstants {
     private static final Log log = LogFactory

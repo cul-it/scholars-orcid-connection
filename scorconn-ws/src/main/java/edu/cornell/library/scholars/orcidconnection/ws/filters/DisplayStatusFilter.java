@@ -66,7 +66,7 @@ public class DisplayStatusFilter implements Filter, WebServerConstants {
         private void showStartupStatusPage()
                 throws ServletException, IOException {
             RequestDispatcher dispatcher = req.getServletContext()
-                    .getNamedDispatcher(SERVLET_STARTUP_STATUS_PAGE);
+                    .getNamedDispatcher(SERVLET_STARTUP_STATUS);
             dispatcher.forward(req, resp);
         }
     }

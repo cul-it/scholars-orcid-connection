@@ -2,7 +2,7 @@
 
 package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
-import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.SERVLET_STARTUP_STATUS;
+import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.SERVLET_USER_DENIED;
 
 import java.io.IOException;
 
@@ -14,21 +14,19 @@ import javax.servlet.http.HttpServletResponse;
 
 import edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants;
 import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
-import edu.cornell.library.scholars.orcidconnection.ws.utils.StartupStatus;
 
 /**
  * Show the startup status.
  */
-@WebServlet(name = SERVLET_STARTUP_STATUS, urlPatterns = "/" + SERVLET_STARTUP_STATUS)
-public class StartupStatusPageController extends HttpServlet
+@WebServlet(name = SERVLET_USER_DENIED, urlPatterns = "/" + SERVLET_USER_DENIED)
+public class UserDeniedAccessController extends HttpServlet
         implements WebServerConstants {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        new PageRenderer(req, resp).setStatusCode(500)
-                .setValue("status", StartupStatus.getInstance())
-                .render(TEMPLATE_STARTUP_STATUS_PAGE);
+        new PageRenderer(req, resp) //
+                .render(TEMPLATE_USER_DENIED_ACCESS_PAGE);
     }
 
 }

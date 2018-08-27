@@ -27,12 +27,6 @@
 
 ### SCORconn
 
-#### Configure Hibernate
-* Configure Hibernate from runtime.properties
-	* Give Greg the updated file
-	* Use the `feature/configure_hibernate` branch, but merge to `develop` before asking Greg to try it.
-	* Tell Greg that we need a `scorconn` database.
-
 #### Other
 * OauthCallbackController should redirect to status screens, not render them itself.
 	* Who else does this apply to? 
@@ -42,17 +36,6 @@
 * Developers Notes
 * Modify ProcessPushRequestController to provide more meaningful URL than the callback URL
 	* Would the callback controller be able to use those URLs
-* Change the flow:
-	* New flow:
-		* On landing, store return URL
-		* If no access token, start the dance.
-			* Else, store in session
-		* If access token has expired, show landingPageInvalidToken.twig.html
-		* On completion, show either "will be pushed" or "will be updated"
-
-	* Landing page takes us directly to ORCID
-		* Unless access token has expired, then to landingPageInvalidToken.twig.html
-	* Add return links to all pages -- return to Scholars@Cornell profile
 
 * Clean up the AuthToken testing
 	* PersonStatusApiController should look at the AccessToken date as well
@@ -81,7 +64,6 @@
 
 ## Real SOON
 * OrcidAuthCallbackController should never render a result or even forward - it should always redirect.
-* Open the ORCID connection in a pop-up window.
 * Get a better date for "last updated". 
 	* Store in AccessToken as "VERIFIED" column, with timestamp.
 * How does one register with Cornell on ORCID? What does it look like?

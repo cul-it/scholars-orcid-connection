@@ -22,7 +22,8 @@ import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
  * Show either the first-time acknowledgement, or the update acknowledgement, as
  * appropriate.
  */
-@WebServlet(urlPatterns = "/" + SERVLET_ACKNOWLEDGE)
+@WebServlet(name = SERVLET_ACKNOWLEDGE, urlPatterns = "/" + SERVLET_ACKNOWLEDGE)
+
 public class AcknowledgePageController extends HttpServlet
         implements WebServerConstants {
     @Override

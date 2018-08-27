@@ -9,10 +9,15 @@ public interface WebServerConstants {
     static final String FILTER_CHECK_AUTH = "checkAuthFilter";
     static final String FILTER_DISPLAY_STATUS = "displayStatusFilter";
 
-    static final String SERVLET_FAKE_LOGIN_PAGE = "FakeLoginPage";
-    static final String SERVLET_STARTUP_STATUS_PAGE = "StartupStatusPage";
-    static final String SERVLET_PROCESS_PUSH_REQUEST = "ProcessPushRequest";
+    static final String SERVLET_LANDING = "LandingPage";
+    static final String SERVLET_FAKE_LOGIN = "FakeLogin";
+    static final String SERVLET_STARTUP_STATUS = "StartupStatusPage";
+    static final String SERVLET_PUSH_PUBS = "ProcessPushRequest";
+    static final String SERVLET_CALLBACK = "OrcidCallback";
+    static final String SERVLET_USER_DENIED = "UserDeniedAccess";
     static final String SERVLET_ACKNOWLEDGE = "Acknowledge";
+    static final String SERVLET_SHOW_ERROR = "ShowError";
+    static final String SERVLET_PERSON_API = "personStatus";
 
     static final String TEMPLATE_FAKE_LOGIN_PAGE = "/templates/fakeLoginPage.twig.html";
     static final String TEMPLATE_LANDING_WITHOUT_TOKEN_PAGE = "/templates/landingPageNoToken.twig.html";
@@ -24,4 +29,5 @@ public interface WebServerConstants {
     static final String TEMPLATE_ACKNOWLEDGE_UPDATE_PAGE = "/templates/acknowledgeUpdatePage.twig.html";
     static final String TEMPLATE_STARTUP_STATUS_PAGE = "/templates/startupStatusPage.twig.html";
 
+    static final String ATTRIBUTE_ERROR_MESSAGE = "sessionAttributeErrorMessage";
 }

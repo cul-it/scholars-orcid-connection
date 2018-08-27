@@ -3,6 +3,7 @@
 package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
 import static edu.cornell.library.orcidclient.auth.AccessToken.NO_TOKEN;
+import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.SERVLET_LANDING;
 import static edu.cornell.library.scholars.orcidconnection.ws.utils.ServletUtils.getOrcidRecordPageUrl;
 
 import java.io.IOException;
@@ -24,7 +25,7 @@ import edu.cornell.library.scholars.orcidconnection.ws.utils.PageRenderer;
  * If the request includes a completion URL, save it so we can return to it at
  * the end of the process.
  */
-@WebServlet("/LandingPage")
+@WebServlet(name = SERVLET_LANDING, urlPatterns = "/" + SERVLET_LANDING)
 public class LandingPageController extends HttpServlet
         implements WebServerConstants {
     public static final String SESSION_KEY_FIRST_TIME = "firstTimeAccess";
@@ -85,8 +86,7 @@ public class LandingPageController extends HttpServlet
 
         private void goDirectlyToPushRequest()
                 throws IOException, ServletException {
-            req.getServletContext()
-                    .getNamedDispatcher(SERVLET_PROCESS_PUSH_REQUEST)
+            req.getServletContext().getNamedDispatcher(SERVLET_PUSH_PUBS)
                     .forward(req, resp);
         }
 
@@ -94,7 +94,7 @@ public class LandingPageController extends HttpServlet
             String orcid = accessToken.getOrcid();
             new PageRenderer(req, resp) //
                     .setValue("localId", localId)
-                    .setValue("formActionUrl", SERVLET_PROCESS_PUSH_REQUEST)
+                    .setValue("formActionUrl", SERVLET_PUSH_PUBS)
                     .setValue("orcidId", orcid)
                     .setValue("orcidIdUrl", getOrcidRecordPageUrl(orcid))
                     .render(TEMPLATE_LANDING_INVALID_TOKEN_PAGE);

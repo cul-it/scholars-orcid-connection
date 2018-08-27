@@ -3,8 +3,8 @@
 ## Structure
 * The product comprises of two distinct applications:
 	* `scorconn-ws` is an interactive web service. 
-		* Users to interact with ORCID, granting permission to add publications to their ORCID record.
-		* Users may initiate an asynchronous update of the publications on their ORCID record.
+		* Users may interact with ORCID, granting SCORconn permission to add publications to their ORCID record.
+		* Users may kick off an asynchronous update of the publications on their ORCID record.
 	* `scorconn-cl` is a batch-oriented command-line application.
 		* The administrator may initiate asynchronous updates for the publications of one or more users.
 		* The users must have granted permission, via `scorconn-ws`.
@@ -29,7 +29,8 @@
 	
 
 ## Hibernate for persistence
-* __*TBD*__ 
+* The `DataLayer` and related classes were clearly written by someone who barely understands how to use Hibernate.
+* 
 
 ## Database design
 
@@ -112,8 +113,8 @@ person, or token.
 	* Only `workType` and `title` are required by ORCID. For our purposes, at least one `externalIds` must be present, providing the Scholars URL.
 	* `workType` must be one of the types defined in [work-2.1.xsd](https://github.com/ORCID/ORCID-Source/blob/master/orcid-model/src/main/resources/record_2.0/work-2.0.xsd). For the initial implementation, it is always `journal-article`.
 	* `publicationDate` is "fuzzy", so these are all valid `2018`, `2018-12`, `2018-04-16`.
-	* `language` must be one of the values defined in [common-2.1.xsd](https://github.com/ORCID/ORCID-Source/blob/master/orcid-model/src/main/resources/common_2.1/common-2.1.xsd).
-	* `country` must be one of the values defined in [common-2.1.xsd](https://github.com/ORCID/ORCID-Source/blob/master/orcid-model/src/main/resources/common_2.1/common-2.1.xsd).
+	* `language`, if present, must be one of the values defined in [common-2.1.xsd](https://github.com/ORCID/ORCID-Source/blob/master/orcid-model/src/main/resources/common_2.1/common-2.1.xsd).
+	* `country`, if present, must be one of the values defined in [common-2.1.xsd](https://github.com/ORCID/ORCID-Source/blob/master/orcid-model/src/main/resources/common_2.1/common-2.1.xsd).
 	* `externalIds.type` must be one of the values defined in [the list of identifiers recognized by ORCID](https://pub.orcid.org/v2.0/identifiers).
 		* For the Scholars URL, `type` must be `other-id`. `displayValue` is arbitrary, but `Scholars@Cornell URL` seems reasonable.
 		* If available, add other external IDs, like `doi` or `isbn`.

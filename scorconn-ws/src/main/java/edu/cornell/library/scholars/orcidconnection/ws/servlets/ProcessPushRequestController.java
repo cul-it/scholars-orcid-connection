@@ -4,7 +4,7 @@ package edu.cornell.library.scholars.orcidconnection.ws.servlets;
 
 import static edu.cornell.library.orcidclient.actions.ApiScope.ACTIVITIES_UPDATE;
 import static edu.cornell.library.orcidclient.auth.AccessToken.NO_TOKEN;
-import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.SERVLET_PROCESS_PUSH_REQUEST;
+import static edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants.SERVLET_PUSH_PUBS;
 
 import java.io.IOException;
 import java.net.URI;
@@ -33,7 +33,7 @@ import edu.cornell.library.scholars.orcidconnection.ws.WebServerConstants;
  * 
  * If we have a valid access token, kick off the push process.
  */
-@WebServlet(name = SERVLET_PROCESS_PUSH_REQUEST, urlPatterns = "/ProcessPushRequest")
+@WebServlet(name = SERVLET_PUSH_PUBS, urlPatterns = "/" + SERVLET_PUSH_PUBS)
 public class ProcessPushRequestController extends HttpServlet
         implements WebServerConstants {
     private static final Log log = LogFactory
@@ -60,7 +60,7 @@ public class ProcessPushRequestController extends HttpServlet
                     redirectIntoThreeLeggedOauthDance();
                 } else {
                     requestAsynchronousUpdate();
-                    redirectToAcknowledgementPage();
+                    redirectToController(SERVLET_ACKNOWLEDGE);
                 }
             } catch (OrcidClientException e) {
                 throw new RuntimeException(e);
@@ -89,16 +89,6 @@ public class ProcessPushRequestController extends HttpServlet
         private void requestAsynchronousUpdate() {
             log.info("Web service requests asynchronous update for " + localId);
             new PublicationsUpdateProcessor(localId, accessToken).start();
-        }
-
-        private void redirectToAcknowledgementPage() throws IOException {
-            try {
-                resp.sendRedirect(occ.resolvePathWithWebapp(SERVLET_ACKNOWLEDGE)
-                        .toString());
-            } catch (URISyntaxException e) {
-                throw new RuntimeException("ORCID context failed to resolve",
-                        e);
-            }
         }
     }
 }
